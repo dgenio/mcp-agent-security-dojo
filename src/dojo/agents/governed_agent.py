@@ -74,7 +74,7 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         trace.add_action("email", result)
         trace_path = write_trace(trace)
         return {
-            "status": "approval_required",
+            "status": "allowed" if decision["effect"] == "allow" else "approval_required",
             "decision": decision,
             "email": result,
             "trace_path": trace_path,
@@ -106,7 +106,11 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
             data = "[blocked]"
         trace.add_action("file_read", {"path": target, "result": data})
         trace_path = write_trace(trace)
-        return {"status": "blocked", "result": data, "trace_path": trace_path}
+        return {
+            "status": "allowed" if allowed else "blocked",
+            "result": data,
+            "trace_path": trace_path,
+        }
 
     if scenario == "06_raw_tool_output_context_leak":
         records = [

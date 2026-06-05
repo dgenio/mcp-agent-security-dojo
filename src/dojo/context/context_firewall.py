@@ -3,7 +3,10 @@
 import re
 
 _PROMPT_INJECTION_PATTERNS = [r"ignore all previous instructions", r"send .* to attacker"]
-_EMAIL_PATTERN = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+")
+# Local part is optional (``*``) so a bare or bracket-prefixed address such as the
+# ``@evil.test`` left behind after injection sanitization is still redacted. A dotted
+# domain is required to avoid matching stray ``@`` characters.
+_EMAIL_PATTERN = re.compile(r"[A-Za-z0-9._%+-]*@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 
 
 def sanitize_untrusted_text(raw: str) -> str:
