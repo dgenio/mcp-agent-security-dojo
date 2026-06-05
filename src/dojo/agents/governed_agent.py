@@ -27,6 +27,14 @@ def _strict_engine(root: Path) -> PolicyEngine:
     return PolicyEngine(str(root / "policies" / "strict_policy.yaml"))
 
 
+def _status_from_effect(effect: str) -> str:
+    """Map a policy decision effect to a scenario status so the reported
+    outcome always tracks the actual enforcement decision (never hard-coded)."""
+    return {"allow": "allowed", "deny": "blocked", "ask": "approval_required"}.get(
+        effect, "blocked"
+    )
+
+
 def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
     root = Path(repo_root)
     trace = AuditTrace(scenario=scenario)
@@ -39,7 +47,11 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         trace.add_decision("exfiltrate", "sensitive_data", decision["effect"], decision["reason"])
         trace.add_action("firewall_text", {"output": safe_text})
         trace_path = write_trace(trace)
-        return {"status": "blocked", "decision": decision, "trace_path": trace_path}
+        return {
+            "status": _status_from_effect(decision["effect"]),
+            "decision": decision,
+            "trace_path": trace_path,
+        }
 
     if scenario == "02_tool_description_poisoning":
         poisoned = json.loads(
@@ -56,7 +68,7 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         trace.add_action("choice_card", card)
         trace_path = write_trace(trace)
         return {
-            "status": "blocked",
+            "status": _status_from_effect(decision["effect"]),
             "decision": decision,
             "choice_card": card,
             "trace_path": trace_path,
@@ -74,7 +86,7 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         trace.add_action("email", result)
         trace_path = write_trace(trace)
         return {
-            "status": "allowed" if decision["effect"] == "allow" else "approval_required",
+            "status": _status_from_effect(decision["effect"]),
             "decision": decision,
             "email": result,
             "trace_path": trace_path,
