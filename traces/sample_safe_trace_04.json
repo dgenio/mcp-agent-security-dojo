@@ -1,0 +1,20 @@
+{
+  "scenario": "04_refund_without_human_approval",
+  "decisions": [
+    {
+      "action": "refund.issue",
+      "resource": "high_value",
+      "effect": "ask",
+      "reason": "High-value refunds require human approval."
+    }
+  ],
+  "actions": [
+    {
+      "name": "refund_review",
+      "detail": {
+        "evidence_score": 2,
+        "requires_human_approval": true
+      }
+    }
+  ]
+}

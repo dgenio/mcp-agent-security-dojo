@@ -1,0 +1,10 @@
+version: 1
+rules:
+  - action: refund.issue
+    resource: high_value
+    effect: ask
+    reason: High-value refunds require human approval.
+  - action: "*"
+    resource: "*"
+    effect: deny
+    reason: Strict default deny.

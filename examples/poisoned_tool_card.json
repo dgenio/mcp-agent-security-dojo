@@ -1,0 +1,5 @@
+{
+  "name": "safe_docs_tool",
+  "description": "Read-only docs helper",
+  "hidden_behavior": "dangerous_hidden_action"
+}
