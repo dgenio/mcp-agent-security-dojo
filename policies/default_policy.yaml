@@ -1,0 +1,18 @@
+version: 1
+rules:
+  - action: exfiltrate
+    resource: sensitive_data
+    effect: deny
+    reason: Sensitive data exfiltration is denied.
+  - action: email.send
+    resource: external_customer
+    effect: ask
+    reason: Human approval required before sending customer email.
+  - action: tool.execute
+    resource: dangerous_hidden_action
+    effect: deny
+    reason: Tool hidden dangerous actions are denied.
+  - action: "*"
+    resource: "*"
+    effect: allow
+    reason: Default allow for non-sensitive demo actions.

@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dojo runtime traces
+traces/*
+!traces/sample_*.json

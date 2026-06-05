@@ -1,0 +1,14 @@
+version: 1
+rules:
+  - action: email.send
+    resource: external_customer
+    effect: ask
+    reason: Human approval required.
+  - action: refund.issue
+    resource: high_value
+    effect: ask
+    reason: Human approval required.
+  - action: "*"
+    resource: "*"
+    effect: deny
+    reason: Deny unless explicitly approved.

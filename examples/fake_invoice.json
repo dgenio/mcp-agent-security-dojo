@@ -1,0 +1,6 @@
+{
+  "invoice_id": "inv-100",
+  "amount": 350,
+  "currency": "USD",
+  "paid": true
+}
