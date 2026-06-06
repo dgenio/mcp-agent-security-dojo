@@ -1,0 +1,57 @@
+site_name: mcp-agent-security-dojo
+site_description: >-
+  A hands-on security dojo for MCP-style and tool-using AI agents: reproduce
+  common failure modes, then govern them with policy gates, bounded context,
+  deterministic flows, capability scoping, and audit traces.
+site_url: https://dgenio.github.io/mcp-agent-security-dojo/
+repo_name: dgenio/mcp-agent-security-dojo
+repo_url: https://github.com/dgenio/mcp-agent-security-dojo
+edit_uri: edit/main/docs/
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Start here: recommended-path.md
+  - Architecture: architecture.md
+  - Threat model: threat-model.md
+  - Security model: security-model.md
+  - Library map: library-map.md
+  - Glossary: glossary.md
+  - FAQ: faq.md
+  - Scenario design: scenario-design.md
+  - Consultant playbook: consultant-playbook.md
+  - Distribution checklist: distribution-checklist.md
+  - Site plan: site-plan.md

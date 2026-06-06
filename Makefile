@@ -1,7 +1,7 @@
 PYTHON ?= python
 SCENARIO ?= 01_prompt_injection_in_tool_result
 
-.PHONY: setup test lint run-unsafe run-safe demo
+.PHONY: setup test lint run-unsafe run-safe demo docs-deps docs docs-serve
 
 setup:
 	$(PYTHON) -m pip install -e .[dev]
@@ -23,3 +23,12 @@ demo:
 	$(PYTHON) scenarios/01_prompt_injection_in_tool_result/unsafe_run.py
 	@echo "=== SAFE (Scenario 01) ==="
 	$(PYTHON) scenarios/01_prompt_injection_in_tool_result/safe_run.py
+
+docs-deps:
+	$(PYTHON) -m pip install -e .[docs]
+
+docs:
+	$(PYTHON) -m mkdocs build
+
+docs-serve:
+	$(PYTHON) -m mkdocs serve
