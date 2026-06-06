@@ -18,7 +18,9 @@ the difference is entirely in how the request is mediated.
 - **Governed path** — [`src/dojo/agents/governed_agent.py`](../src/dojo/agents/governed_agent.py):
   `run_governed_scenario(scenario, repo_root)` routes each request through policy,
   capability, context-firewall, deterministic-flow, and audit controls, then derives
-  the reported status from the actual enforcement decision via `_status_from_effect`.
+  the reported status from the relevant control's outcome — via `_status_from_effect` for the
+  policy-mediated scenarios (01–03), and from the capability / flow / scan / redaction result
+  for the others (04–07).
 
 > The current agents use an explicit per-scenario dispatch (`if scenario == ...:`).
 > Replacing this with a single reusable execution loop is tracked separately

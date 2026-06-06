@@ -15,9 +15,13 @@ control lives).
   `PolicyEngine.decide(action, resource)` matches rules from a policy YAML and returns a
   `PolicyDecision(effect, reason)`. The governed agent reaches it through
   `AgentFenceAdapter.enforce(...)`.
-- **Guarantee:** every governed action is checked against declared rules, and **no rule match
-  falls through to `deny`** ("default deny"). The reported scenario status is derived from the
-  effect (`allow`→allowed, `deny`→blocked, `ask`→approval_required), never hard-coded.
+- **Guarantee:** every governed action is checked against declared rules, and when **no rule
+  matches, the decision falls through to `deny`** ("default deny"). For the policy-mediated
+  scenarios (01–03) the reported status is derived from that effect via `_status_from_effect`
+  (`allow`→allowed, `deny`→blocked, `ask`→approval_required), never hard-coded. Scenarios whose
+  primary control is not the policy engine derive their status from that control's outcome
+  instead — the capability check (05), the deterministic flow's approval gate (04), the diff
+  scan (07), or the redaction step (06).
 - **Limitations:** matching is first-rule-wins with only exact-or-`*` comparison — there is no
   specificity ranking and no glob matching, so rule order matters. Hardening this is tracked in
   #12. Conditions/thresholds (e.g. refund amount) are not yet expressible in policy (#54).
