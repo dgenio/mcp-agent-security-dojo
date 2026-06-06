@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+title: mcp-agent-security-dojo
+message: >-
+  If you use this project in your research, teaching, talks, or
+  consulting material, please cite it using the metadata below.
+type: software
+authors:
+  - given-names: Diogo
+    family-names: Santos
+repository-code: "https://github.com/dgenio/mcp-agent-security-dojo"
+url: "https://github.com/dgenio/mcp-agent-security-dojo"
+abstract: >-
+  A hands-on security dojo for MCP-style and tool-using AI agents:
+  reproduce common failure modes (prompt injection, tool poisoning,
+  over-permissioned tools, unapproved side effects, context leakage,
+  AI-generated auth-weakening diffs), then govern them with policy
+  gates, bounded context, deterministic flows, capability scoping,
+  and audit traces. Educational lab and reference architecture; not
+  production-ready.
+keywords:
+  - MCP
+  - AI agents
+  - agent security
+  - LLM security
+  - prompt injection
+  - tool use
+  - policy-as-code
+  - audit trail
+  - defense-in-depth
+license: MIT
+version: 0.1.0
+date-released: "2026-06-06"
