@@ -8,14 +8,57 @@ version = "0.1.0"
 description = "A hands-on security dojo for MCP-style and tool-using AI agents: reproduce common failure modes, then govern them with policy gates, bounded context, deterministic flows, capability scoping, and audit traces."
 readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Diogo Santos" },
+]
+keywords = [
+  "mcp",
+  "model-context-protocol",
+  "ai-agents",
+  "agent-security",
+  "llm-security",
+  "prompt-injection",
+  "tool-use",
+  "policy-as-code",
+  "audit-trail",
+  "ai-safety",
+  "security-lab",
+  "defense-in-depth",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Information Technology",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Education",
+]
 dependencies = [
   "pyyaml>=6.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/dgenio/mcp-agent-security-dojo"
+Repository = "https://github.com/dgenio/mcp-agent-security-dojo"
+Issues = "https://github.com/dgenio/mcp-agent-security-dojo/issues"
+Documentation = "https://github.com/dgenio/mcp-agent-security-dojo/tree/main/docs"
+Changelog = "https://github.com/dgenio/mcp-agent-security-dojo/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
   "ruff>=0.5",
+]
+docs = [
+  "mkdocs>=1.6",
+  "mkdocs-material>=9.5",
 ]
 
 [tool.pytest.ini_options]
