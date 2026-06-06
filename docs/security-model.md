@@ -89,8 +89,8 @@ control lives).
 Scenario 01 applies **two** layers to one request:
 
 1. The **context firewall** rewrites the injected tool output
-   (`Search result... [blocked-instruction] and [blocked-instruction]`), so the exfiltration
-   instruction never reaches a decision intact.
+   (`Search result... [blocked-instruction] and [blocked-instruction][redacted-email]`), so the
+   exfiltration instruction never reaches a decision intact.
 2. The **policy engine** independently denies `exfiltrate / sensitive_data`.
 
 Either layer alone would stop this attack; together they mean a miss in the regex detector is
