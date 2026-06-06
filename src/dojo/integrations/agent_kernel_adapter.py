@@ -1,6 +1,11 @@
 """agent-kernel adapter.
 
-TODO: Replace fallback with real capability/context firewall support from agent-kernel.
+LOCAL REFERENCE IMPLEMENTATION — this is NOT the real library. agent-kernel is
+published as ``weaver-kernel`` (import ``weaver_kernel``) and provides the real
+``CapabilityToken``/``Firewall``/``TraceStore`` primitives this file hand-rolls.
+See ``docs/library-map.md``.
+
+TODO: Replace with real ``weaver_kernel`` capabilities (tracked in #21).
 """
 
 import os

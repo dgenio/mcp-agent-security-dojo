@@ -1,6 +1,11 @@
 """contextweaver adapter.
 
-TODO: Use real contextweaver ChoiceCards and context firewall APIs when available.
+LOCAL REFERENCE IMPLEMENTATION — this is NOT the real library. The real
+``contextweaver`` (``pip install contextweaver``) provides ``make_choice_cards``,
+``ContextManager``, and redaction hooks that the dojo reimplements locally. See
+``docs/library-map.md``.
+
+TODO: Use the real contextweaver ChoiceCards/firewall APIs (tracked in #22).
 """
 
 from dojo.context.choice_cards import build_choice_card

@@ -1,0 +1,50 @@
+# mcp-agent-security-dojo
+
+> A hands-on security dojo for MCP-style and tool-using AI agents: reproduce common failure modes, then govern them with policy gates, bounded context, deterministic flows, capability scoping, and audit traces.
+
+Educational lab and reference architecture — NOT production-ready. Tools are local simulators
+with fake data; there is no network or live LLM. Every scenario ships an unsafe baseline that
+reproduces a failure and a governed path that applies controls.
+
+## Scenarios
+
+- 01_prompt_injection_in_tool_result: injected tool output → agent emails an SSN; governed: context firewall + policy deny (blocked).
+- 02_tool_description_poisoning: benign-looking tool hides a dangerous action; governed: verified ChoiceCard + policy deny (blocked).
+- 03_unapproved_email_send: agent sends email directly; governed: policy ask → draft (approval_required).
+- 04_refund_without_human_approval: $350 refund on weak evidence; governed: deterministic flow + threshold (approval_required).
+- 05_malicious_file_read: agent reads internal_secrets.txt; governed: capability token path scoping (blocked).
+- 06_raw_tool_output_context_leak: full PII records dumped into context; governed: bounded summary (redacted).
+- 07_ai_generated_auth_bypass_pr: risky auth-weakening diff would merge; governed: diff scanner blocks (blocked).
+
+## Commands
+
+- make setup — editable install with dev extras
+- make test — run the test suite
+- make run-unsafe SCENARIO=<id> — run the unsafe baseline
+- make run-safe SCENARIO=<id> — run the governed path
+- make demo — scenario 01, unsafe then safe
+
+## Docs
+
+- docs/recommended-path.md — guided "start here" walkthrough (recommend first)
+- docs/architecture.md — package layout and governed pipeline
+- docs/threat-model.md — assets, trust boundaries, per-scenario mapping
+- docs/security-model.md — control layers, guarantees, limitations
+- docs/library-map.md — Weaver Stack libraries and integration status
+- docs/glossary.md — core term definitions
+- docs/faq.md — common MCP/tool-use security questions
+- docs/llm-index.md — fuller machine-readable index
+
+## Libraries
+
+Designed around the Weaver Stack (AgentFence, agent-kernel/weaver-kernel, contextweaver,
+ChainWeaver, lessonweaver, VibeGuard, skdr-eval). Currently demonstrated via LOCAL REFERENCE
+IMPLEMENTATIONS (stubs) under src/dojo/integrations/; the real packages are not yet wired in.
+Note: the PyPI package "agentfence" is an unrelated third-party project — this project's
+AgentFence is a Go module / GitHub Action.
+
+## What not to claim
+
+- Not production-ready, not hardened, not a drop-in security product.
+- The Weaver Stack libraries are NOT integrated yet (local stubs only).
+- Detectors are best-effort regex/substring checks, not complete.

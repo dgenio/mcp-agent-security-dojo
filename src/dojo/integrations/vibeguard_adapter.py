@@ -1,6 +1,11 @@
 """VibeGuard adapter.
 
-TODO: Replace with real VibeGuard CI integration.
+LOCAL REFERENCE IMPLEMENTATION — this is NOT the real library. The real VibeGuard
+is published as ``vibeguard-gate`` (import ``vibeguard``) and ships a real diff
+scanner + CI gate; this file matches three literal substrings only. See
+``docs/library-map.md``.
+
+TODO: Replace with the real ``vibeguard`` scanner over PR diffs (tracked in #25).
 """
 
 
