@@ -1,6 +1,11 @@
 """ChainWeaver adapter.
 
-TODO: Wire deterministic schema-validated orchestration to real ChainWeaver APIs.
+LOCAL REFERENCE IMPLEMENTATION — this is NOT the real library. The real
+``chainweaver`` (``pip install chainweaver``) provides ``FlowBuilder``, the
+``@tool`` decorator, and schema validation; this file just folds step callables
+over a dict with no validation. See ``docs/library-map.md``.
+
+TODO: Wire real ChainWeaver schema-validated flows (tracked in #23).
 """
 
 

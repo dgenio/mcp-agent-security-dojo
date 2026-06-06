@@ -1,6 +1,12 @@
 """AgentFence adapter.
 
-TODO: Replace fallback with real AgentFence integration when package/API is available.
+LOCAL REFERENCE IMPLEMENTATION — this is NOT the real AgentFence. It wraps the
+dojo's own ``PolicyEngine`` to demonstrate the policy-gate concept. The real
+AgentFence is a Go module / GitHub Action (``github.com/dgenio/agentfence``) that
+gates recorded MCP/tool calls; the PyPI package ``agentfence`` is an unrelated
+third-party project and must not be used. See ``docs/library-map.md``.
+
+TODO: Wire the real AgentFence CI gate (tracked in #26).
 """
 
 from dojo.policies.engine import PolicyEngine
