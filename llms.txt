@@ -33,7 +33,13 @@ reproduces a failure and a governed path that applies controls.
 - docs/library-map.md — Weaver Stack libraries and integration status
 - docs/glossary.md — core term definitions
 - docs/faq.md — common MCP/tool-use security questions
+- docs/consultant-playbook.md — business-value and client-conversation framing
+- docs/distribution-checklist.md — ethical checklist before sharing the lab externally
+- docs/site-plan.md — how the docs build/publish as a MkDocs site
 - docs/llm-index.md — fuller machine-readable index
+- CONTRIBUTING.md — setup, lint/test, and add-a-new-scenario guide
+- SECURITY.md — scope of security reports (unsafe scenarios are intentional)
+- CHANGELOG.md — notable changes (Keep a Changelog)
 
 ## Libraries
 

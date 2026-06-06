@@ -1,5 +1,13 @@
 # mcp-agent-security-dojo
 
+![mcp-agent-security-dojo banner](docs/assets/banner.svg)
+
+[![tests](https://github.com/dgenio/mcp-agent-security-dojo/actions/workflows/tests.yml/badge.svg)](https://github.com/dgenio/mcp-agent-security-dojo/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
+[![Status: educational lab](https://img.shields.io/badge/status-educational%20lab-orange.svg)](#not-production-ready)
+[![Conventional Commits](https://img.shields.io/badge/commits-conventional-fe5196.svg)](https://www.conventionalcommits.org/)
+
 A hands-on security dojo for MCP-style and tool-using AI agents: reproduce common failure modes, then govern them with policy gates, bounded context, deterministic flows, capability scoping, and audit traces.
 
 > **New here? Start with the [recommended path](docs/recommended-path.md).** It walks one guided journey end to end: see an unsafe failure, understand why, then watch the governed path stop it.
@@ -72,8 +80,39 @@ See [docs/architecture.md](docs/architecture.md) for the full pipeline mapped to
 - [Library map](docs/library-map.md) — the Weaver Stack libraries and their current integration status.
 - [Glossary](docs/glossary.md) — definitions of the core terms used throughout.
 - [FAQ](docs/faq.md) — common MCP / tool-use security questions.
-- [Scenario design](docs/scenario-design.md) · [Consultant playbook](docs/consultant-playbook.md)
+- [Scenario design](docs/scenario-design.md) · [Consultant playbook](docs/consultant-playbook.md) — business-value and client-conversation framing.
+- [Distribution checklist](docs/distribution-checklist.md) — run through this before sharing the lab externally.
+- [Site plan](docs/site-plan.md) — how the docs build/publish as a MkDocs site (`make docs`).
 - [`llms.txt`](llms.txt) / [LLM index](docs/llm-index.md) — machine-readable repository summary.
+
+A browsable docs site can be built with MkDocs Material:
+
+```bash
+make docs-deps   # pip install -e .[docs]
+make docs        # build to ./site
+make docs-serve  # live preview at http://127.0.0.1:8000
+```
+
+## Contributing & security
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — setup, lint/test commands, and an "add a new scenario" guide.
+- [SECURITY.md](SECURITY.md) — what is (and isn't) in scope; the unsafe scenarios are intentionally vulnerable.
+- [CHANGELOG.md](CHANGELOG.md) — notable changes, Keep a Changelog format.
+- [CITATION.cff](CITATION.cff) — how to cite this project.
+
+### <a id="topics"></a>Recommended GitHub topics
+
+For discoverability, this repository should carry these topics (set under
+**Settings → General → Topics**, or via the GitHub API — they live in repository
+settings, not the codebase):
+
+`mcp` · `model-context-protocol` · `ai-agents` · `agent-security` ·
+`llm-security` · `prompt-injection` · `tool-use` · `policy-as-code` ·
+`audit-trail` · `ai-safety` · `security-lab` · `defense-in-depth`
+
+The [banner](docs/assets/banner.svg) under `docs/assets/` can be exported to PNG
+and uploaded as the repository **social preview** (Settings → General → Social
+preview).
 
 ## <a id="libraries"></a>Libraries
 
