@@ -3,6 +3,7 @@
 ![mcp-agent-security-dojo banner](docs/assets/banner.svg)
 
 [![tests](https://github.com/dgenio/mcp-agent-security-dojo/actions/workflows/tests.yml/badge.svg)](https://github.com/dgenio/mcp-agent-security-dojo/actions/workflows/tests.yml)
+[![vibeguard](https://github.com/dgenio/mcp-agent-security-dojo/actions/workflows/vibeguard.yml/badge.svg)](https://github.com/dgenio/mcp-agent-security-dojo/actions/workflows/vibeguard.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![Status: educational lab](https://img.shields.io/badge/status-educational%20lab-orange.svg)](#not-production-ready)
