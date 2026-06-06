@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="mcp-agent-security-dojo">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a1340"/>
+      <stop offset="0.55" stop-color="#2d2b6b"/>
+      <stop offset="1" stop-color="#3949ab"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8c9eff"/>
+      <stop offset="1" stop-color="#c5cae9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1280" height="8" fill="url(#accent)"/>
+
+  <!-- shield mark -->
+  <g transform="translate(120,200)" fill="none" stroke="#8c9eff" stroke-width="10" stroke-linejoin="round">
+    <path d="M120 0 L235 42 V150 C235 230 185 285 120 320 C55 285 5 230 5 150 V42 Z" fill="#1a1340"/>
+    <path d="M68 158 L108 200 L182 110" stroke="#c5cae9" stroke-width="16" stroke-linecap="round"/>
+  </g>
+
+  <!-- wordmark -->
+  <g transform="translate(440,0)" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <text x="0" y="270" fill="#ffffff" font-size="76" font-weight="700">mcp-agent</text>
+    <text x="0" y="356" fill="url(#accent)" font-size="76" font-weight="700">-security-dojo</text>
+    <text x="0" y="430" fill="#c5cae9" font-size="30" font-weight="400">Reproduce agent failure modes, then govern them.</text>
+    <text x="0" y="476" fill="#9fa8da" font-size="24" font-weight="400">policy gates · bounded context · deterministic flows · capability scoping · audit traces</text>
+  </g>
+
+  <text x="120" y="600" fill="#7e88c4" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22">Educational security lab — not production-ready</text>
+</svg>
