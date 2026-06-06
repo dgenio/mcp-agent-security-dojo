@@ -12,11 +12,12 @@ the single source of truth, and the site is a thin presentation layer over them.
 
 - **`mkdocs.yml`** at the repo root defines the site name/description, the
   Material theme, a navigation tree over the existing docs, and the
-  `superfences` extension so the README/architecture Mermaid diagrams render.
+  `superfences` extension so the Mermaid diagrams in the docs (e.g.
+  `architecture.md`) render.
 - **`docs/index.md`** is the landing page (the GitHub README stays the canonical
   entry point for the repo itself).
-- The `docs` optional-dependency group in `pyproject.toml` pins `mkdocs` and
-  `mkdocs-material`.
+- The `docs` optional-dependency group in `pyproject.toml` declares `mkdocs` and
+  `mkdocs-material` with minimum-version constraints (`>=`).
 - The generated `site/` directory is already gitignored.
 
 ## Building locally

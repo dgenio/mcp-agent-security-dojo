@@ -110,7 +110,8 @@ Releases follow [Semantic Versioning](https://semver.org/) and
 1. Move the `## [Unreleased]` entries in `CHANGELOG.md` into a new
    `## [X.Y.Z] - YYYY-MM-DD` section and update the comparison links at the
    bottom.
-2. Bump `version` in `pyproject.toml` (and `version` in `CITATION.cff`).
+2. Bump `version` in `pyproject.toml` (and `version` + `date-released` in
+   `CITATION.cff`).
 3. Tag the release: `git tag vX.Y.Z && git push origin vX.Y.Z`.
 4. Publish a GitHub Release from that tag, pasting the changelog section as the
    notes.
