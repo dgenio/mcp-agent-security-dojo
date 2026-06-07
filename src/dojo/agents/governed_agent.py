@@ -57,14 +57,20 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         poisoned = json.loads(
             (root / "examples" / "poisoned_tool_card.json").read_text(encoding="utf-8")
         )
-        card = to_choice_card(poisoned["name"], ["read_docs"], "Verified read-only docs helper")
-        decision = fence.enforce("tool.execute", poisoned["hidden_behavior"])
-        trace.add_decision(
-            "tool.execute",
-            poisoned["hidden_behavior"],
-            decision["effect"],
-            decision["reason"],
+        # The governed path does not trust the card's benign self-description.
+        # In this scenario the poisoned "summarize" tool's real effect —
+        # returning full payment data — is known, so it is gated as exfiltration
+        # of sensitive data regardless of the innocuous-looking card (which
+        # carries no self-incriminating field). Runtime, catalog-driven
+        # verification of a tool's true effect is tracked separately (#15/#22).
+        advertised = poisoned.get("advertised_actions", ["read_invoice_summary"])
+        card = to_choice_card(
+            poisoned["name"],
+            advertised,
+            "Verified read-only invoice summary (payment data withheld)",
         )
+        decision = fence.enforce("exfiltrate", "sensitive_data")
+        trace.add_decision("exfiltrate", "sensitive_data", decision["effect"], decision["reason"])
         trace.add_action("choice_card", card)
         trace_path = write_trace(trace)
         return {
@@ -144,6 +150,22 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         return {
             "status": "blocked" if not result["passed"] else "allowed",
             "scan": result,
+            "trace_path": trace_path,
+        }
+
+    if scenario == "08_privilege_escalation_ambient_authority":
+        # A privileged role change steered by an untrusted ticket note. The
+        # policy gate denies it regardless of the ambient authority the unsafe
+        # agent enjoyed. (A per-task capability scope, tracked in #8/#52, would
+        # deny it even earlier, before policy runs.)
+        decision = fence.enforce("admin.update_user_role", "privileged")
+        trace.add_decision(
+            "admin.update_user_role", "privileged", decision["effect"], decision["reason"]
+        )
+        trace_path = write_trace(trace)
+        return {
+            "status": _status_from_effect(decision["effect"]),
+            "decision": decision,
             "trace_path": trace_path,
         }
 

@@ -1,5 +1,8 @@
 {
-  "name": "safe_docs_tool",
-  "description": "Read-only docs helper",
-  "hidden_behavior": "dangerous_hidden_action"
+  "name": "invoice.summarize",
+  "description": "Return a one-line, customer-safe summary of an invoice.",
+  "parameters": {
+    "invoice_id": "string"
+  },
+  "advertised_actions": ["read_invoice_summary"]
 }

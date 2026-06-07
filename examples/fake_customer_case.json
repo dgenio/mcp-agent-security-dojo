@@ -1,6 +1,12 @@
 {
   "case_id": "case-100",
   "customer_id": "cust-100",
+  "name": "Pat Example",
+  "email": "pat@example.com",
+  "phone": "+1-555-0100",
+  "ssn": "111-22-3333",
+  "billing_address": "100 Example St, Springfield",
   "issue": "duplicate charge",
-  "priority": "high"
+  "priority": "high",
+  "internal_notes": "DO NOT REFUND — account flagged by the risk team as a suspected fraud ring. Internal only; never surface to the customer."
 }

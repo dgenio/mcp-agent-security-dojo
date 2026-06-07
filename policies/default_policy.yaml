@@ -12,6 +12,10 @@ rules:
     resource: dangerous_hidden_action
     effect: deny
     reason: Tool hidden dangerous actions are denied.
+  - action: admin.update_user_role
+    resource: privileged
+    effect: deny
+    reason: Privileged role changes require an explicit admin capability and approval.
   - action: "*"
     resource: "*"
     effect: allow
