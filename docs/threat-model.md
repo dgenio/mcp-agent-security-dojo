@@ -61,6 +61,7 @@ directly — those are the trust anchors the governed path relies on.
 | 05 | Malicious file read | Privileged side effect | Secrets file read | Capability token path scoping | `integrations/agent_kernel_adapter.py` |
 | 06 | Raw tool output context leak | Untrusted tool output | Full PII dumped into context | Bounded summary (allow-list of fields) | `context/context_firewall.py` |
 | 07 | AI-generated auth bypass PR | AI-generated code | Auth-weakening diff merges | Diff safety scan blocks on findings | `integrations/vibeguard_adapter.py` |
+| 08 | Privilege escalation via ambient authority | Broad ambient authority | Privileged role change from an unrelated task | Policy deny + (would-be) per-task capability scope | `policies/engine.py`, `audit/side_effects.py` |
 
 ## Residual risks and out of scope
 

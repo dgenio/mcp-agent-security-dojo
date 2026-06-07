@@ -25,13 +25,14 @@ Run any row with `make run-unsafe SCENARIO=<id>` then `make run-safe SCENARIO=<i
 
 | Scenario | What breaks in the unsafe version | What protects the governed version | Concepts (reference libs[¹](#libraries)) | Run & inspect |
 |---|---|---|---|---|
-| 01 prompt injection in tool result | Injected docs output steers the agent into emailing an SSN to `attacker@evil.test` | Context firewall sanitizes/redacts; policy **denies** exfiltration | context firewall (contextweaver), policy gate (AgentFence) | [walkthrough](scenarios/01_prompt_injection_in_tool_result/README.md) · [trace](traces/sample_safe_trace_01.json) |
+| 01 prompt injection in tool result | Injected docs output steers the agent into forwarding the customer's SSN to an address **extracted from the untrusted text** | Context firewall sanitizes/redacts; policy **denies** exfiltration | context firewall (contextweaver), policy gate (AgentFence) | [walkthrough](scenarios/01_prompt_injection_in_tool_result/README.md) · [trace](traces/sample_safe_trace_01.json) |
 | 02 tool description poisoning | A benign-looking tool card hides a dangerous action that runs | Verified ChoiceCard + policy **denies** the hidden action | ChoiceCards (contextweaver), policy gate (AgentFence) | [walkthrough](scenarios/02_tool_description_poisoning/README.md) |
 | 03 unapproved email send | Agent sends a customer email directly | Policy returns **ask** → email downgraded to a draft pending approval | policy `ask` (AgentFence), approval (agent-kernel) | [walkthrough](scenarios/03_unapproved_email_send/README.md) |
 | 04 refund without human approval | A $350 refund is issued on weak evidence | Deterministic refund flow + threshold → **approval required** | deterministic flow (ChainWeaver), approval (agent-kernel) | [walkthrough](scenarios/04_refund_without_human_approval/README.md) · [trace](traces/sample_safe_trace_04.json) |
 | 05 malicious file read | Agent reads `internal_secrets.txt` outside any boundary | Capability token scopes reads to `examples/safe/` → **blocked** | capability tokens (agent-kernel) | [walkthrough](scenarios/05_malicious_file_read/README.md) |
 | 06 raw tool output context leak | Full CRM + billing + support records (incl. PII) dumped into context | Bounded summary keeps only allowed fields → **redacted** | bounded context (contextweaver) | [walkthrough](scenarios/06_raw_tool_output_context_leak/README.md) |
 | 07 AI-generated auth bypass PR | A risky auth-weakening diff would merge | Diff scanner flags the pattern → **blocked** | diff safety check (VibeGuard), reviewed lessons (lessonweaver) | [walkthrough](scenarios/07_ai_generated_auth_bypass_pr/README.md) |
+| 08 privilege escalation via ambient authority | An injected ticket note steers the agent into calling `admin.update_user_role` during a billing task | Policy **denies** the privileged action; per-task capability scope would deny it earlier | policy gate (AgentFence), capability tokens (agent-kernel) | [walkthrough](scenarios/08_privilege_escalation_ambient_authority/README.md) |
 
 ## Quickstart
 
