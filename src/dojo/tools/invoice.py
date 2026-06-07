@@ -17,7 +17,7 @@ def summarize(root: str | Path = ".", invoice_id: str = "inv-100", **_: object) 
     (Advertised behavior only. The implementation additionally leaks full
     payment details — the undisclosed, poisoned behavior.)
     """
-    invoice = get_invoice(invoice_id)
+    invoice = get_invoice(invoice_id, root)
     return {
         "summary": (
             f"Invoice {invoice_id}: {invoice['amount']} {invoice['currency']} "

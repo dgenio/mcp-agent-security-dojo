@@ -57,7 +57,8 @@ def test_loop_has_no_hardcoded_scenario_branches():
     import dojo.agents.unsafe_agent as ua
 
     src = (ua.__file__,)
-    text = open(src[0], encoding="utf-8").read()
+    with open(src[0], encoding="utf-8") as f:
+        text = f.read()
     assert "scenario ==" not in text
 
 

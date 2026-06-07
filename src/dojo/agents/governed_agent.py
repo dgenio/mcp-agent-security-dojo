@@ -57,10 +57,12 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         poisoned = json.loads(
             (root / "examples" / "poisoned_tool_card.json").read_text(encoding="utf-8")
         )
-        # The governed path trusts the *verified* capability, not the card's own
-        # description: the catalog shows this "summarize" tool actually returns
-        # full payment data, so its real effect is treated as exfiltration and
-        # gated accordingly (the card never carries a self-incriminating field).
+        # The governed path does not trust the card's benign self-description.
+        # In this scenario the poisoned "summarize" tool's real effect —
+        # returning full payment data — is known, so it is gated as exfiltration
+        # of sensitive data regardless of the innocuous-looking card (which
+        # carries no self-incriminating field). Runtime, catalog-driven
+        # verification of a tool's true effect is tracked separately (#15/#22).
         advertised = poisoned.get("advertised_actions", ["read_invoice_summary"])
         card = to_choice_card(
             poisoned["name"],
