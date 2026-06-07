@@ -5,16 +5,6 @@ from pathlib import Path
 from dojo.tools._fixtures import load_json
 
 
-def get_customer_record(customer_id: str) -> dict:
-    return {
-        "customer_id": customer_id,
-        "name": "Pat Example",
-        "email": "pat@example.com",
-        "status": "gold",
-        "notes": "Customer asked about a billing error.",
-    }
-
-
 def search_customer(root: str | Path = ".", query: str = "", **_: object) -> list[dict]:
     """Return matching customer stubs (id + name only)."""
     profile = get_customer_profile(root)
