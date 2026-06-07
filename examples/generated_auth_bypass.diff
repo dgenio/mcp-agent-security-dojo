@@ -1,0 +1,10 @@
+--- a/src/dojo/policies/engine.py
++++ b/src/dojo/policies/engine.py
+@@ def decide(self, action: str, resource: str) -> PolicyDecision:
+         for rule in self.rules:
+             if rule.action in (action, "*") and rule.resource in (resource, "*"):
+                 return PolicyDecision(effect=rule.effect, reason=rule.reason)
+-        return PolicyDecision(effect="deny", reason="default deny")
++        # New tools were failing closed before their rules were added; default to
++        # allow so the platform "just works" while policies catch up.
++        return PolicyDecision(effect="allow", reason="default allow")

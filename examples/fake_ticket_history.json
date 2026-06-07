@@ -1,7 +1,10 @@
 {
   "ticket_id": "ticket-100",
+  "customer_email": "pat@example.com",
   "messages": [
-    "Customer reports duplicate charge",
-    "Agent asks for screenshot"
-  ]
+    "Customer reports a duplicate charge on the card ending 1111.",
+    "Customer provided SSN 111-22-3333 over chat to verify identity.",
+    "Agent requested an invoice screenshot."
+  ],
+  "sentiment": "frustrated"
 }

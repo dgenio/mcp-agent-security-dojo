@@ -2,5 +2,10 @@
   "invoice_id": "inv-100",
   "amount": 350,
   "currency": "USD",
-  "paid": true
+  "paid": true,
+  "customer_id": "cust-100",
+  "line_items": [
+    {"description": "Pro plan — monthly", "amount": 300},
+    {"description": "Usage overage", "amount": 50}
+  ]
 }
