@@ -63,3 +63,15 @@ def test_governed_context_leak_scenario_drops_pii(monkeypatch, tmp_path):
     assert "pat@example.com" not in flattened
     assert "customer_id" not in flattened
     assert "contains pii" not in flattened
+
+
+def test_governed_context_metrics_show_before_after_reduction(monkeypatch, tmp_path):
+    # #40: the same metric hook runs on both paths, so the firewall's effect is
+    # quantified — the governed context is smaller and carries no sensitive fields.
+    monkeypatch.setenv("DOJO_TRACE_DIR", str(tmp_path))
+    unsafe = run_unsafe_scenario("06_raw_tool_output_context_leak", repo_root=".")
+    governed = run_governed_scenario("06_raw_tool_output_context_leak", repo_root=".")
+    assert "context_metrics" in governed
+    assert governed["context_metrics"]["sensitive_field_count"] == 0
+    assert unsafe["context_metrics"]["sensitive_field_count"] > 0
+    assert governed["context_metrics"]["approx_chars"] < unsafe["context_metrics"]["approx_chars"]
