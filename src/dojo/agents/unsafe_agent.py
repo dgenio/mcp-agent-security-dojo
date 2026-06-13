@@ -184,12 +184,14 @@ def select_tool(
             "rationale": "request asked for an invoice summary",
         }
 
-    # 4. Refund -> FREE-FORM: a known business process run as ad-hoc reasoning
-    #    over the untrusted note. The amount and invoice come straight from the
-    #    text; no fixed step sequence, no ownership/evidence validation, no
-    #    approval gate (contrast: the deterministic ``run_refund_review`` flow).
+    # 4. Refund -> FREE-FORM: a known business process run as ad-hoc reasoning.
+    #    The *intent* may come from the request, but both refund parameters
+    #    (amount and invoice) are parsed only from the untrusted note so the
+    #    trust boundary is unambiguous — no fixed step sequence, no
+    #    ownership/evidence validation, no approval gate (contrast: the
+    #    deterministic ``run_refund_review`` flow).
     if "refund" in req and trust_notes and "billing.issue_refund" not in executed:
-        refund = _parse_refund(context_text + "\n" + request)
+        refund = _parse_refund(context_text)
         if refund:
             return {
                 "tool": "billing.issue_refund",
