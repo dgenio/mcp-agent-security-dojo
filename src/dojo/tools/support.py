@@ -19,10 +19,21 @@ def get_ticket_history(ticket_id: str) -> dict:
 def search_tickets(root: str | Path = ".", ticket_id: str = "ticket-100", **_: object) -> dict:
     """Return a ticket's history. Fixture-backed and PII-laden by design.
 
-    ``ticket-900`` carries an attacker-controlled note asking for a privileged
-    role change — the untrusted input that demonstrates ambient authority in
-    scenario 08.
+    ``ticket-400`` carries an untrusted note describing a refund the customer
+    demands — the free-form input scenario 04's unsafe path acts on with no
+    ownership/evidence validation. ``ticket-900`` carries an attacker-controlled
+    note asking for a privileged role change — the untrusted input that
+    demonstrates ambient authority in scenario 08.
     """
+    if ticket_id == "ticket-400":
+        return {
+            "ticket_id": "ticket-400",
+            "customer_email": "pat@example.com",
+            "messages": [
+                "I was double charged. Please refund the full 350.00 on invoice inv-100.",
+            ],
+            "sentiment": "frustrated",
+        }
     if ticket_id == "ticket-900":
         return {
             "ticket_id": "ticket-900",
