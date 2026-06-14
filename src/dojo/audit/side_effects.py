@@ -39,6 +39,10 @@ class SideEffectLedger:
             return None
         path = Path(ledger_dir)
         path.mkdir(parents=True, exist_ok=True)
-        out = path / f"{scenario}_ledger_{uuid.uuid4().hex[:8]}.json"
+        
+        # Sanitize scenario to prevent path traversal
+        safe_scenario = Path(scenario).name or "unknown_scenario"
+        out = path / f"{safe_scenario}_ledger_{uuid.uuid4().hex[:8]}.json"
+        
         out.write_text(json.dumps(self.entries, indent=2), encoding="utf-8")
         return str(out)
