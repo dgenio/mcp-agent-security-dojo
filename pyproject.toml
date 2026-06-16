@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mcp-agent-security-dojo"
-version = "0.1.0"
+version = "0.2.0"
 description = "A hands-on security dojo for MCP-style and tool-using AI agents: reproduce common failure modes, then govern them with policy gates, bounded context, deterministic flows, capability scoping, and audit traces."
 readme = "README.md"
 requires-python = ">=3.10"

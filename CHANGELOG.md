@@ -12,6 +12,10 @@ will always be called out in the relevant entry.
 
 ### Added
 
+## [0.2.0] - 2026-06-16
+
+### Added
+
 - Realistic unsafe baseline: `src/dojo/agents/unsafe_agent.py` is now a real
   catalog → select → execute → raw-context loop driven by a local deterministic
   "model" (`select_tool`), replacing the per-scenario hard-coded dispatch
@@ -78,5 +82,6 @@ will always be called out in the relevant entry.
   glossary, FAQ, recommended path, and an LLM-readable index (`llms.txt`).
 - CI workflows for tests/lint and a VibeGuard scenario demo.
 
-[Unreleased]: https://github.com/dgenio/mcp-agent-security-dojo/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/dgenio/mcp-agent-security-dojo/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/dgenio/mcp-agent-security-dojo/releases/tag/v0.2.0
 [0.1.0]: https://github.com/dgenio/mcp-agent-security-dojo/releases/tag/v0.1.0
