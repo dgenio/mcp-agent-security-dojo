@@ -1,6 +1,8 @@
+diff --git a/src/dojo/policies/engine.py b/src/dojo/policies/engine.py
+index 4a57890..4b42d50 100644
 --- a/src/dojo/policies/engine.py
 +++ b/src/dojo/policies/engine.py
-@@ def decide(self, action: str, resource: str) -> PolicyDecision:
+@@ -24,4 +24,6 @@ class PolicyEngine:
          for rule in self.rules:
              if rule.action in (action, "*") and rule.resource in (resource, "*"):
                  return PolicyDecision(effect=rule.effect, reason=rule.reason)

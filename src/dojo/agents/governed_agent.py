@@ -5,6 +5,7 @@ from pathlib import Path
 
 from dojo.audit.trace import AuditTrace
 from dojo.audit.writer import write_trace
+from dojo.context.metrics import context_metrics
 from dojo.flows.refund_review import run_refund_review
 from dojo.integrations.agent_kernel_adapter import CapabilityToken
 from dojo.integrations.agentfence_adapter import AgentFenceAdapter
@@ -137,9 +138,18 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
             {"ticket_id": "ticket-100", "messages": ["contains pii"], "sentiment": "frustrated"},
         ]
         bounded = firewall_records(records)
+        # Same metric hook the unsafe path uses, now on the bounded/redacted
+        # context — enabling a concrete before/after comparison (#40): far fewer
+        # chars and zero sensitive fields survive the firewall.
+        metrics = context_metrics(bounded, record_count=len(bounded))
         trace.add_action("bounded_context", {"cards": bounded})
         trace_path = write_trace(trace)
-        return {"status": "redacted", "bounded_context": bounded, "trace_path": trace_path}
+        return {
+            "status": "redacted",
+            "bounded_context": bounded,
+            "context_metrics": metrics,
+            "trace_path": trace_path,
+        }
 
     if scenario == "07_ai_generated_auth_bypass_pr":
         diff = "if user.is_admin or True:\n    return allow()"
