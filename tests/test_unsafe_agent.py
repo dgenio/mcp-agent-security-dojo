@@ -221,12 +221,15 @@ def test_unsafe_log_is_present_but_useless_for_audit():
     result = run_unsafe_scenario("03_unapproved_email_send", repo_root=".")
     log = result["weak_log"]
     assert log, "the unsafe path should look instrumented (it logs every step)"
+    # Every line is the same content-free string: it looks instrumented but
+    # records nothing that distinguishes one step from another.
+    assert all(line == "INFO: handled request" for line in log)
+    # ...and it carries none of the fields the governed structured trace records —
+    # no actor/resource, no decision rationale (effect/reason), no tool args:
     blob = " ".join(log)
-    # ...yet a free-text line carries none of what an audit needs:
-    assert "@" not in blob  # no resource / recipient
-    assert "customer@example.com" not in blob
-    assert "effect" not in blob and "reason" not in blob  # no decision rationale
-    assert "args" not in blob and "{" not in blob  # no tool arguments
+    for field_name in ("actor", "resource", "effect", "reason", "args"):
+        assert field_name not in blob
+    assert "@" not in blob  # no recipient / resource
     assert not re.search(r"\d{4}-\d{2}-\d{2}T", blob)  # no timestamp
 
 

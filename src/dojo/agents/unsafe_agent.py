@@ -75,14 +75,17 @@ def _parse_refund(text: str) -> dict | None:
     """Extract a refund {invoice_id, amount} from untrusted text, or ``None``.
 
     No ownership, payment-status, or duplicate-charge evidence is consulted —
-    the amount and target come entirely from whatever the note says."""
+    the amount and target come entirely from whatever the note says. If the note
+    names no invoice, ``invoice_id`` is ``None`` (the agent issues the refund
+    without even a confirmed invoice) rather than a fabricated default — so every
+    returned parameter is genuinely note-derived."""
     match = _REFUND_RE.search(text)
     if not match:
         return None
     amount = float(match.group(1).replace(",", ""))
     amount = int(amount) if amount.is_integer() else amount
     invoice = _INVOICE_RE.search(text)
-    return {"invoice_id": invoice.group(1) if invoice else "inv-100", "amount": amount}
+    return {"invoice_id": invoice.group(1) if invoice else None, "amount": amount}
 
 
 @dataclass
@@ -190,6 +193,10 @@ def select_tool(
     #    trust boundary is unambiguous — no fixed step sequence, no
     #    ownership/evidence validation, no approval gate (contrast: the
     #    deterministic ``run_refund_review`` flow).
+    #    The ``trust_notes`` gate intentionally couples #36 and #37: the free-form
+    #    refund only fires when the unreviewed "trust the ticket notes" lesson is
+    #    deployed — the same lesson that "fixes" the wrongly-denied refund (case A)
+    #    is what lets an injected note drive an unvalidated one (case B).
     if "refund" in req and trust_notes and "billing.issue_refund" not in executed:
         refund = _parse_refund(context_text)
         if refund:
