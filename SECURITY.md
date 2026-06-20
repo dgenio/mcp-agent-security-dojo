@@ -36,6 +36,25 @@ who runs it as documented, for example:
 - Exposure of a real secret accidentally committed to the repository.
 - A vulnerability in the project's tooling, CI workflows, or build configuration.
 
+## Automated scanning scope
+
+A [`bandit`](https://bandit.readthedocs.io/) static-analysis job
+(`.github/workflows/security.yml`, run locally via `make security`) scans the
+**governed controls and the project's own tooling** — `src/dojo/` and `tools/` —
+which is the surface this policy puts in scope. The intentionally-vulnerable
+teaching modules are deliberately **excluded** so the scan stays signal-rich
+instead of flagging the lab's designed-in failure modes:
+
+- `src/dojo/agents/unsafe_agent.py`
+- `src/dojo/audit/inadequate_log.py`
+- `src/dojo/lessons/unreviewed_lessons.py`
+- everything under `scenarios/` (each `unsafe_run.py` is teaching material)
+
+The exclusion list lives in the `Makefile` (`BANDIT_EXCLUDE`) and
+`[tool.bandit]` in `pyproject.toml`. If you add a new intentionally-unsafe
+module, extend the exclusion and note why in its docstring; do **not** "fix" a
+deliberate weakness to satisfy the scanner.
+
 ## Reporting a vulnerability
 
 Please report privately rather than opening a public issue:

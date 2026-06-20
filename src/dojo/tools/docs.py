@@ -5,9 +5,7 @@ from pathlib import Path
 from dojo.tools._fixtures import load_text
 
 
-def search_docs(
-    query: str, include_malicious_result: bool = False, root: str | Path = "."
-) -> str:
+def search_docs(query: str, include_malicious_result: bool = False, root: str | Path = ".") -> str:
     """Search the knowledge base.
 
     With ``include_malicious_result`` the result is sourced from

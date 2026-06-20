@@ -101,13 +101,15 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
 
     if scenario == "04_refund_without_human_approval":
         review = run_refund_review("inv-100", "ticket-100")
-        decision = _strict_engine(root).decide("refund.issue", "high_value")
-        trace.add_decision("refund.issue", "high_value", decision.effect, decision.reason)
+        policy_decision = _strict_engine(root).decide("refund.issue", "high_value")
+        trace.add_decision(
+            "refund.issue", "high_value", policy_decision.effect, policy_decision.reason
+        )
         trace.add_action("refund_review", review)
         trace_path = write_trace(trace)
         return {
             "status": "approval_required" if review["requires_human_approval"] else "allowed",
-            "decision": {"effect": decision.effect, "reason": decision.reason},
+            "decision": {"effect": policy_decision.effect, "reason": policy_decision.reason},
             "review": review,
             "trace_path": trace_path,
         }
@@ -132,7 +134,7 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         }
 
     if scenario == "06_raw_tool_output_context_leak":
-        records = [
+        records: list[dict] = [
             {"customer_id": "cust-100", "email": "pat@example.com", "status": "gold"},
             {"invoice_id": "inv-100", "amount": 350, "status": "paid"},
             {"ticket_id": "ticket-100", "messages": ["contains pii"], "sentiment": "frustrated"},

@@ -8,7 +8,6 @@ scanner + CI gate; this file matches three literal substrings only. See
 TODO: Replace with the real ``vibeguard`` scanner over PR diffs (tracked in #25).
 """
 
-
 DANGEROUS_DIFF_PATTERNS = ["or True", "auth_disabled", "bypass_authorization"]
 
 

@@ -12,6 +12,36 @@ will always be called out in the relevant entry.
 
 ### Added
 
+- CI/quality hardening across the GitHub Actions workflows and developer
+  tooling:
+  - Test matrix on Python 3.10, 3.11, and 3.12 (was 3.10 only) (#78).
+  - `pytest-cov` coverage with a non-blocking term-missing report in CI;
+    `make coverage` locally (#76).
+  - `mypy` static type checking over `src/dojo` (lenient config); `make type`
+    and a CI step (#77).
+  - `bandit` security scan of the governed controls and tooling, excluding the
+    intentionally-unsafe teaching modules; `make security` and
+    `.github/workflows/security.yml` (#84).
+  - Offline Markdown link checker (`tools/check_doc_links.py`, `make linkcheck`)
+    and a CI job that fails on broken repo-relative links (#79).
+  - GitHub Pages publishing for the MkDocs site via
+    `.github/workflows/docs.yml` (build + link check on PRs, `gh-deploy` on
+    `main`) (#97).
+  - `.pre-commit-config.yaml` mirroring the ruff lint/format checks plus basic
+    hygiene hooks; `make hooks` to install (#88).
+  - `.github/dependabot.yml` for the `github-actions` and `pip` ecosystems (#83).
+  - Aggregate `make check` target running lint, type, test, linkcheck, and
+    security.
+
+### Changed
+
+- GitHub Actions are pinned to immutable commit SHAs (with version comments)
+  instead of floating major tags (#83).
+- `make lint` now also runs `ruff format --check`; the repo was formatted once
+  with `ruff format` to match (#88).
+- `governed_agent.py`: precise type annotations so `mypy` passes with no
+  behavior change (#77).
+
 ## [0.2.0] - 2026-06-16
 
 ### Added
