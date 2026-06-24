@@ -42,6 +42,39 @@ will always be called out in the relevant entry.
 - `governed_agent.py`: precise type annotations so `mypy` passes with no
   behavior change (#77).
 
+## [0.2.1] - 2026-06-23
+
+### Added
+
+- `src/dojo/lessons/unreviewed_lessons.py` — an unreviewed "always trust the
+  ticket notes" lesson pasted straight into the effective system prompt with no
+  review step. It is what makes the agent act on instructions in untrusted
+  notes; toggle it with `run_unsafe_scenario(..., apply_unreviewed_lesson=...)`.
+  The lesson fixes one case (a refund denied in error) while opening a
+  prompt-injection vector — the failure that motivates a reviewed lesson
+  lifecycle (#37).
+- Scenario 04's refund is now **free-form reasoning over the untrusted
+  ticket-400 note** — `select_tool` parses the amount/invoice from the note and
+  issues the refund with no ownership/evidence check, instead of a hard-coded
+  `issue_refund` call (#36).
+- `src/dojo/audit/inadequate_log.py` — a plausible-but-useless `weak_log` the
+  unsafe agent emits per step (no actor / resource / rationale / args /
+  timestamp), making the gap to the governed structured trace concrete (#35).
+- `examples/generated_auth_bypass.diff` is now a **valid, applicable** patch
+  that flips the policy engine's default `deny` to `allow`; applying it keeps
+  `make lint` and `make test` green and is invisible to the substring diff
+  scanner — demonstrating CI blindness to semantic regressions (#38).
+- The governed scenario 06 emits `context_metrics` on the bounded context, so
+  the raw-vs-bounded leak is a measured before/after (≈2638→121 chars,
+  7→0 sensitive fields) rather than an assertion (#40).
+
+### Changed
+
+- Scenario walkthroughs refreshed for the extended unsafe baseline: unreviewed
+  lesson lifecycle, free-form refund, inadequate-logging side-by-side,
+  measured context-metric before/after, and the realistic auth-bypass diff with
+  an explanation of why current CI is blind to it.
+
 ## [0.2.0] - 2026-06-16
 
 ### Added
@@ -50,28 +83,6 @@ will always be called out in the relevant entry.
   catalog → select → execute → raw-context loop driven by a local deterministic
   "model" (`select_tool`), replacing the per-scenario hard-coded dispatch
   (#29, #6).
-- Unsafe baseline realism, round two (#35, #36, #37, #38, #40):
-  - `src/dojo/lessons/unreviewed_lessons.py` — an unreviewed "always trust the
-    ticket notes" lesson pasted straight into the effective system prompt with no
-    review step. It is what makes the agent act on instructions in untrusted
-    notes; toggle it with `run_unsafe_scenario(..., apply_unreviewed_lesson=...)`.
-    The lesson fixes one case (a refund denied in error) while opening a
-    prompt-injection vector — the failure that motivates a reviewed lesson
-    lifecycle (#37).
-  - Scenario 04's refund is now **free-form reasoning over the untrusted
-    ticket-400 note** — `select_tool` parses the amount/invoice from the note and
-    issues the refund with no ownership/evidence check, instead of a hard-coded
-    `issue_refund` call (#36).
-  - `src/dojo/audit/inadequate_log.py` — a plausible-but-useless `weak_log` the
-    unsafe agent emits per step (no actor / resource / rationale / args /
-    timestamp), making the gap to the governed structured trace concrete (#35).
-  - `examples/generated_auth_bypass.diff` is now a **valid, applicable** patch
-    that flips the policy engine's default `deny` to `allow`; applying it keeps
-    `make lint` and `make test` green and is invisible to the substring diff
-    scanner — demonstrating CI blindness to semantic regressions (#38).
-  - The governed scenario 06 emits `context_metrics` on the bounded context, so
-    the raw-vs-bounded leak is a measured before/after (≈2638→121 chars,
-    7→0 sensitive fields) rather than an assertion (#40).
 - `src/dojo/tools/catalog.py` — a credible enterprise tool catalog with
   `description` / `side_effecting` / `risk` / `required_scope` metadata, handed
   wholesale to the unsafe agent. Adds `crm.search_customer`,
@@ -134,6 +145,7 @@ will always be called out in the relevant entry.
   glossary, FAQ, recommended path, and an LLM-readable index (`llms.txt`).
 - CI workflows for tests/lint and a VibeGuard scenario demo.
 
-[Unreleased]: https://github.com/dgenio/mcp-agent-security-dojo/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/dgenio/mcp-agent-security-dojo/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/dgenio/mcp-agent-security-dojo/releases/tag/v0.2.1
 [0.2.0]: https://github.com/dgenio/mcp-agent-security-dojo/releases/tag/v0.2.0
 [0.1.0]: https://github.com/dgenio/mcp-agent-security-dojo/releases/tag/v0.1.0
