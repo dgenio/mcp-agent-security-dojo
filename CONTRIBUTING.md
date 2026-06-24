@@ -35,7 +35,7 @@ make lint         # ruff check + ruff format --check
 make type         # mypy over src/dojo
 make security     # bandit scan of the governed controls + tooling
 make linkcheck    # verify repo-relative Markdown links resolve
-make check        # all of the above (what CI runs)
+make check        # all of the above (mirrors the checks CI runs across its workflows)
 ```
 
 Optionally install the pre-commit hooks so the fast checks (ruff lint + format
