@@ -28,20 +28,23 @@ make docs                  # mkdocs build  -> ./site
 make docs-serve            # mkdocs serve  -> http://127.0.0.1:8000
 ```
 
-## Publishing (GitHub Pages) — proposed
+## Publishing (GitHub Pages) — implemented
 
-This is the suggested rollout; it is intentionally **not** wired into CI yet so a
-maintainer can opt in deliberately:
+The publish step is wired in `.github/workflows/docs.yml`:
 
-1. Add a workflow (e.g. `.github/workflows/docs.yml`) that runs on push to
-   `main`, installs `.[docs]`, and runs `mkdocs gh-deploy --force` (or builds and
-   uploads a Pages artifact). Scope its token to the minimum needed
-   (`contents: write` for `gh-deploy`, or `pages: write` + `id-token: write` for
-   the Pages deploy action).
-2. Enable **GitHub Pages** for the repository (Settings → Pages), sourced from
-   the `gh-pages` branch or the Pages action.
-3. Confirm `site_url` in `mkdocs.yml` matches the published URL
+1. On every pull request and push, a `check` job installs `.[dev,docs]`,
+   verifies repo-relative Markdown links (`make linkcheck`), and builds the site
+   (`make docs`) so a broken doc never merges.
+2. On push to `main`, a `deploy` job runs `mkdocs gh-deploy --force` with a
+   minimal `contents: write` token, publishing the built site to the `gh-pages`
+   branch.
+3. `site_url` in `mkdocs.yml` matches the published URL
    (`https://dgenio.github.io/mcp-agent-security-dojo/`).
+
+**One-time maintainer step:** enable GitHub Pages for the repository
+(Settings → Pages → Deploy from a branch → `gh-pages`) so the published site is
+served. Until that toggle is set, the `deploy` job still updates the `gh-pages`
+branch, but the site will not be reachable.
 
 ## Conventions
 

@@ -30,7 +30,19 @@ Python 3.10+ is required.
 ```bash
 make setup        # pip install -e .[dev]
 make test         # pytest -q
-make lint         # ruff check src tests scenarios
+make coverage     # pytest with a term-missing coverage report
+make lint         # ruff check + ruff format --check
+make type         # mypy over src/dojo
+make security     # bandit scan of the governed controls + tooling
+make linkcheck    # verify repo-relative Markdown links resolve
+make check        # all of the above (mirrors the checks CI runs across its workflows)
+```
+
+Optionally install the pre-commit hooks so the fast checks (ruff lint + format
+and basic hygiene) run automatically before each commit:
+
+```bash
+make hooks        # pre-commit install
 ```
 
 Run a scenario both ways while developing:
@@ -49,14 +61,30 @@ everything else under `traces/` is gitignored.
 Run the same checks CI runs, and make sure they pass:
 
 ```bash
-make lint    # must report "All checks passed!"
-make test    # must report all tests passed
+make check   # lint + type + test + linkcheck + security
 ```
 
+or individually: `make lint`, `make type`, `make test` (or `make coverage`),
+`make linkcheck`, `make security`.
+
 `ruff` is configured in `pyproject.toml` (line length 100, rule sets `E`, `F`,
-`I`). There is no separate type checker. CI (`.github/workflows/tests.yml`) runs
-lint + tests on Python 3.10; `.github/workflows/vibeguard.yml` runs the
-scenario 07 safe path.
+`I`) and is also checked for formatting (`ruff format --check`). Static typing is
+checked with `mypy` over `src/dojo` (lenient config in `pyproject.toml`;
+`make type`). A `bandit` scan (`make security`) covers the governed controls and
+tooling — the intentionally-unsafe teaching modules are excluded (see
+[`SECURITY.md`](SECURITY.md)).
+
+CI (`.github/workflows/tests.yml`) runs lint + type + tests-with-coverage across
+Python 3.10, 3.11, and 3.12; `.github/workflows/security.yml` runs the bandit
+scan; `.github/workflows/docs.yml` checks Markdown links, builds the MkDocs site,
+and publishes it to GitHub Pages on `main`; `.github/workflows/vibeguard.yml`
+runs the scenario 07 safe path.
+
+**Pinned actions:** third-party GitHub Actions are pinned to immutable commit
+SHAs with a trailing `# vX.Y.Z` version comment; keep that convention when
+editing workflows. [Dependabot](.github/dependabot.yml) raises weekly update PRs
+for both the actions and the Python dependencies — review those like any other
+change (confirm the new SHA matches the commented version).
 
 ## Coding conventions
 

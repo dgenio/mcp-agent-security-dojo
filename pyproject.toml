@@ -54,7 +54,11 @@ Changelog = "https://github.com/dgenio/mcp-agent-security-dojo/blob/main/CHANGEL
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
+  "pytest-cov>=5.0",
   "ruff>=0.5",
+  "mypy>=1.10",
+  "bandit>=1.7",
+  "pre-commit>=3.7",
 ]
 docs = [
   "mkdocs>=1.6",
@@ -65,9 +69,32 @@ docs = [
 pythonpath = ["src"]
 testpaths = ["tests"]
 
+[tool.coverage.run]
+source = ["dojo"]
+branch = true
+
 [tool.ruff]
 line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[tool.mypy]
+# Lenient first pass scoped to the governed library: precise annotations are
+# verified without a large initial cleanup. Tighten (e.g. disallow_untyped_defs)
+# in a follow-up once adapters/tests are annotated too (#77).
+python_version = "3.10"
+files = ["src/dojo"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+
+[tool.bandit]
+# Scope the scan to the governed controls and tooling (per SECURITY.md). The
+# intentionally-vulnerable teaching surface is excluded so the scan stays
+# signal-rich rather than flagging the lab's deliberate failure modes (#84).
+# Directory exclusions are honoured from config; the unsafe baseline *files*
+# under src/dojo are excluded via `-x` in `make security` / the CI job (bandit
+# only honours file-level excludes from the CLI).
+exclude_dirs = ["tests", "scenarios"]
