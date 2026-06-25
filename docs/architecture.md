@@ -76,6 +76,10 @@ Tracing `run_governed_scenario("03_unapproved_email_send", ...)`:
 The unsafe counterpart simply calls `email.send_email("customer@example.com", ...)` and
 returns `{"status": "risky", ...}` with no decision and no trace.
 
+For the same scenario traced through **both** agents (including the unsafe
+catalog → select → execute loop), see
+[Anatomy of a scenario](anatomy-of-a-scenario.md).
+
 ## Where real libraries plug in
 
 The `integrations/` adapters are the seam. Each is a thin facade over a local

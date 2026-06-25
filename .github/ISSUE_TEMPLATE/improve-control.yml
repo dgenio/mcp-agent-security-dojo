@@ -1,0 +1,40 @@
+name: Improve a control
+description: Sharpen or extend a governed control (policy engine, context firewall, capability tokens, flows, audit).
+title: "[control] <short title>"
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Control area
+      options:
+        - Policy engine (policies/, src/dojo/policies/)
+        - Context firewall / redaction (src/dojo/context/)
+        - Capability tokens (src/dojo/integrations/agent_kernel_adapter.py)
+        - Deterministic flows (src/dojo/flows/)
+        - Audit trace (src/dojo/audit/)
+        - Integration adapter (src/dojo/integrations/)
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behaviour
+      description: What does the control do today, and where (file/symbol)?
+    validations:
+      required: true
+  - type: textarea
+    id: desired
+    attributes:
+      label: Desired behaviour
+      description: What should change, and why does it improve the teaching value or correctness?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How will we know it's done? List concrete, testable outcomes.
+    validations:
+      required: false

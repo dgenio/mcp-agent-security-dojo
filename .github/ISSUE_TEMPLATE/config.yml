@@ -1,0 +1,9 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability (private)
+    url: https://github.com/dgenio/mcp-agent-security-dojo/security/advisories/new
+    about: >-
+      Found a real flaw in a governed control, an accidental real side effect, or
+      a committed real secret? Report it privately via a Security advisory — do not
+      open a public issue. The unsafe scenarios are intentionally vulnerable; see
+      SECURITY.md.
