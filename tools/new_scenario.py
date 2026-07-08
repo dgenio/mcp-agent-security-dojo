@@ -120,7 +120,13 @@ def scaffold(slug: str, scenarios_dir: Path) -> Path:
     if folder.exists():
         raise FileExistsError(f"{folder} already exists")
     for existing in scenarios_dir.iterdir() if scenarios_dir.exists() else []:
-        if existing.is_dir() and existing.name.endswith(f"_{slug}"):
+        if not existing.is_dir():
+            continue
+        # Compare the slug portion after the ``NN_`` prefix, not a suffix match:
+        # an existing ``01_new_thing`` must not block a new slug ``thing``.
+        match = _DIR_RE.match(existing.name)
+        existing_slug = existing.name[match.end() :] if match else existing.name
+        if existing_slug == slug:
             raise FileExistsError(f"a scenario for slug {slug!r} already exists: {existing.name}")
 
     folder.mkdir(parents=True)

@@ -68,6 +68,14 @@ def test_scaffold_rejects_duplicate_slug(tmp_path):
         new_scenario.scaffold("taken", tmp_path)
 
 
+def test_scaffold_allows_slug_that_is_a_suffix_of_an_existing_slug(tmp_path):
+    # Regression: an existing "01_new_thing" must not block the distinct slug
+    # "thing" (the duplicate check compares the full slug, not a suffix match).
+    _seed(tmp_path, "01_new_thing")
+    folder = new_scenario.scaffold("thing", tmp_path)
+    assert folder.name == "02_thing"
+
+
 def test_main_returns_nonzero_on_bad_slug(tmp_path, capsys):
     rc = new_scenario.main(["Bad Slug", "--scenarios-dir", str(tmp_path)])
     assert rc == 1
