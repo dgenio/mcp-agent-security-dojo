@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 _SLUG_RE = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
-_DIR_RE = re.compile(r"^(\d{2})_")
+_DIR_RE = re.compile(r"^(\d+)_")
 
 
 def next_number(scenarios_dir: Path) -> str:
@@ -42,7 +42,8 @@ def next_number(scenarios_dir: Path) -> str:
 
 def _readme(scenario_id: str, slug: str) -> str:
     title = slug.replace("_", " ").capitalize()
-    return f"""# Scenario {scenario_id[:2]} — {title}
+    number = scenario_id.split("_", 1)[0]
+    return f"""# Scenario {number} — {title}
 
 ## The attack
 

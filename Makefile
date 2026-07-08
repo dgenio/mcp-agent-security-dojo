@@ -16,7 +16,7 @@ help:  ## Show this help (the default target)
 		| awk 'BEGIN {FS = ":.*## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
 
 doctor:  ## Check the local environment (Python version, install, tools)
-	@$(PYTHON) -c "import sys, importlib.util as u; v=sys.version_info; req=[('Python >= 3.10', v >= (3, 10)), ('dojo importable (make setup)', u.find_spec('dojo') is not None)]; opt=('ruff', 'pytest', 'mypy'); [print(('OK   ' if ok else 'FAIL ') + name) for name, ok in req]; [print(('OK   ' if u.find_spec(m) else 'WARN ') + m + (' available' if u.find_spec(m) else ' missing — run: make setup')) for m in opt]; sys.exit(0 if all(ok for _, ok in req) else 1)"
+	@$(PYTHON) tools/doctor.py
 
 setup:  ## Editable install with dev extras (pytest, ruff, mypy, bandit, pre-commit)
 	$(PYTHON) -m pip install -e .[dev]
