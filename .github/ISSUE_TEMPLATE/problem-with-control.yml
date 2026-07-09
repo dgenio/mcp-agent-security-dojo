@@ -1,0 +1,45 @@
+name: Report a problem with a governed control
+description: A governed control behaves incorrectly (NOT for the intentionally-unsafe scenarios).
+title: "[bug] <short title>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        ⚠️ The **unsafe** scenarios are intentionally vulnerable — please do not
+        report those here (see SECURITY.md). If you've found a **real**
+        vulnerability (an actual side effect, a leak in a *governed* path, or a
+        committed real secret), report it privately via a
+        [Security advisory](https://github.com/dgenio/mcp-agent-security-dojo/security/advisories/new)
+        instead of this form. This form is for governed controls behaving
+        incorrectly in a non-exploit sense.
+  - type: input
+    id: scenario
+    attributes:
+      label: Scenario / control
+      description: Which scenario or control? (e.g. 06 governed path, context firewall)
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+      description: What did the governed path do, and what does the documentation say it should do?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Exact commands and the observed output.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: Python version and OS.
+      placeholder: e.g. Python 3.12 on Linux
+    validations:
+      required: false

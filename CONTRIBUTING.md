@@ -25,9 +25,18 @@ through the governed pipeline and which module owns each stage.
 
 ## Development setup
 
-Python 3.10+ is required.
+Python 3.10+ is required. Run `make help` to list every target, and
+`make doctor` to check your environment (Python version, editable install, and
+that `ruff`/`pytest`/`mypy` are available). Editor whitespace conventions are
+codified in [`.editorconfig`](.editorconfig).
+
+> Prefer zero local setup? Open the repo in a
+> [devcontainer / GitHub Codespaces](.devcontainer/devcontainer.json) — it runs
+> `make setup` automatically.
 
 ```bash
+make help         # list all targets
+make doctor       # verify the local environment
 make setup        # pip install -e .[dev]
 make test         # pytest -q
 make coverage     # pytest with a term-missing coverage report
@@ -86,6 +95,26 @@ editing workflows. [Dependabot](.github/dependabot.yml) raises weekly update PRs
 for both the actions and the Python dependencies — review those like any other
 change (confirm the new SHA matches the commented version).
 
+## Definition of done
+
+A change is ready to merge when (the
+[pull-request template](.github/PULL_REQUEST_TEMPLATE.md) mirrors this list):
+
+- [ ] `make check` passes (lint + type + test + linkcheck + security), or any
+      failing step is explained in the PR.
+- [ ] Coverage is not reduced; new public behaviour is tested with a **happy
+      path and a failure/edge case**, with specific assertions.
+- [ ] All affected doc surfaces are updated in the same PR — the README scenario
+      map, the relevant `docs/*`, and scenario READMEs — so docs never drift from
+      code.
+- [ ] [`CHANGELOG.md`](CHANGELOG.md) `## [Unreleased]` has an entry for any
+      user-facing change.
+- [ ] Tools stay simulated and data stays fake (no network, no real
+      credentials, no writes outside the working tree).
+
+`make linkcheck` is the automated backstop for the doc-link items; keep it green
+rather than relying on review to catch broken cross-links.
+
 ## Coding conventions
 
 - Match the surrounding code: absolute imports from `dojo.*`, small focused
@@ -98,11 +127,21 @@ change (confirm the new SHA matches the commented version).
 
 ## Adding a new scenario
 
-Scenarios are the core teaching unit. To add one:
+Scenarios are the core teaching unit. For how a scenario actually runs end to
+end (both agents, the tools, the policy, and the trace), read
+[`docs/anatomy-of-a-scenario.md`](docs/anatomy-of-a-scenario.md). To add one:
 
 1. **Create the directory** `scenarios/NN_short_slug/` using the next number
-   `NN`. Add four files, mirroring an existing scenario such as
-   `scenarios/03_unapproved_email_send/`:
+   `NN`, with four files mirroring an existing scenario such as
+   `scenarios/03_unapproved_email_send/`. The fastest way is to scaffold them:
+
+   ```bash
+   make new-scenario SLUG=my_short_slug   # creates scenarios/NN_my_short_slug/
+   ```
+
+   The generator ([`tools/new_scenario.py`](tools/new_scenario.py)) computes the
+   next `NN`, writes the four files from a template, and prints the remaining
+   (scenario-specific) wiring steps. The four files are:
    - `README.md` — what breaks, what protects it, how to run it.
    - `unsafe_run.py` — reproduces the failure using the `unsafe_agent` /
      simulated tools.

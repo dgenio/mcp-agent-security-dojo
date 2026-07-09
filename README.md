@@ -37,13 +37,19 @@ Run any row with `make run-unsafe SCENARIO=<id>` then `make run-safe SCENARIO=<i
 ## Quickstart
 
 ```bash
+make help     # list every target
 make setup
+make doctor   # verify your environment (Python, install, tools)
 make test
 make run-unsafe SCENARIO=01_prompt_injection_in_tool_result
 make run-safe   SCENARIO=01_prompt_injection_in_tool_result
 ```
 
 Governed runs write an audit trace to `traces/` (override the location with `DOJO_TRACE_DIR`).
+
+> **Zero local setup:** open the repo in GitHub Codespaces or a local
+> [devcontainer](.devcontainer/devcontainer.json) — `make setup` runs
+> automatically on create.
 
 ## Architecture
 

@@ -46,6 +46,7 @@ nav:
   - Home: index.md
   - Start here: recommended-path.md
   - Architecture: architecture.md
+  - Anatomy of a scenario: anatomy-of-a-scenario.md
   - Threat model: threat-model.md
   - Security model: security-model.md
   - Library map: library-map.md

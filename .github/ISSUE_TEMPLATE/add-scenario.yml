@@ -1,0 +1,48 @@
+name: Add a scenario
+description: Propose a new unsafe-vs-governed teaching scenario.
+title: "[scenario] <short title>"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Scenarios are the core teaching unit. Please skim the "Adding a new
+        scenario" guide in CONTRIBUTING.md before filing.
+  - type: textarea
+    id: failure-mode
+    attributes:
+      label: Failure mode
+      description: What agent failure does the unsafe path reproduce?
+      placeholder: e.g. an injected ticket note steers the agent into a privileged action.
+    validations:
+      required: true
+  - type: textarea
+    id: control
+    attributes:
+      label: Governing control(s)
+      description: Which existing control(s) under src/dojo/ stop it in the governed path?
+      placeholder: e.g. policy `deny`, capability scope, context firewall, deterministic flow.
+    validations:
+      required: true
+  - type: textarea
+    id: fixtures
+    attributes:
+      label: Fixtures needed
+      description: Any new fake fixtures under examples/ (fake data only — no real secrets).
+    validations:
+      required: false
+  - type: input
+    id: slug
+    attributes:
+      label: Proposed slug
+      description: Short snake_case slug for the scenario folder (the NN_ prefix is assigned by the generator).
+      placeholder: e.g. privilege_escalation_ambient_authority
+    validations:
+      required: false
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Acknowledgements
+      options:
+        - label: This scenario uses only simulated tools and fake data (no network, no real credentials).
+          required: true

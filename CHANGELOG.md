@@ -12,6 +12,25 @@ will always be called out in the relevant entry.
 
 ### Added
 
+- Contributor experience & onboarding:
+  - `make help` (now the default target) listing every target, and `make doctor`
+    to check the local environment — Python ≥ 3.10, an editable `dojo` install,
+    and `ruff`/`pytest`/`mypy` availability (#87).
+  - GitHub issue forms (`add a scenario`, `improve a control`, `documentation`,
+    `report a problem with a governed control`) plus a pull-request template that
+    mirrors the new definition-of-done checklist; security reports are routed to
+    private advisories via `config.yml` (#89).
+  - A `.devcontainer/` for one-click GitHub Codespaces / devcontainer runs with
+    `make setup` preconfigured (#90).
+  - A scenario scaffolding generator — `tools/new_scenario.py` /
+    `make new-scenario SLUG=...` — that creates `scenarios/NN_slug/` with the four
+    standard files from a template and prints the remaining wiring steps (#103).
+  - `docs/anatomy-of-a-scenario.md` tracing one scenario end to end through both
+    agents, the tools, the policy, and the trace (#108).
+  - A "Definition of done" checklist in `CONTRIBUTING.md`, tied to the PR
+    template (#123).
+  - An `.editorconfig` codifying whitespace/indent conventions across Python,
+    YAML, JSON, and Markdown, consistent with the ruff line length (#124).
 - CI/quality hardening across the GitHub Actions workflows and developer
   tooling:
   - Test matrix on Python 3.10, 3.11, and 3.12 (was 3.10 only) (#78).

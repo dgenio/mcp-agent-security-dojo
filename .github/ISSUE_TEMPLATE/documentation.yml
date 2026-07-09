@@ -1,0 +1,26 @@
+name: Documentation
+description: Report a docs gap, inaccuracy, or drift between docs and code.
+title: "[docs] <short title>"
+labels: ["documentation"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      description: Which file(s) or section? (e.g. docs/architecture.md, README scenario map)
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong or missing
+      description: Describe the gap, error, or drift. If docs contradict code, cite both.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix
+      description: Optional — what the corrected text/section should say.
+    validations:
+      required: false
