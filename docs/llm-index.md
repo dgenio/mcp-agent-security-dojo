@@ -27,8 +27,8 @@ simulators with fake data; there is no network or live LLM.
 7. `07_ai_generated_auth_bypass_pr` — a risky auth-weakening diff would merge; governed: diff
    scanner flags the pattern → `blocked`.
 8. `08_privilege_escalation_ambient_authority` — injected ticket text steers the agent into
-   calling `admin.update_user_role`; governed: policy deny + per-task capability scope →
-   `blocked`.
+   calling `admin.update_user_role`; governed: policy denial via `fence.enforce` →
+   `blocked`. Per-task capability scoping is a prospective hardening step.
 
 ## Architecture (text)
 

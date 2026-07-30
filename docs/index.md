@@ -38,7 +38,7 @@ make run-safe   SCENARIO=01_prompt_injection_in_tool_result
 | 05 | Malicious file read | Capability token scoping |
 | 06 | Raw tool-output context leak | Bounded summary / redaction |
 | 07 | AI-generated auth-bypass PR | Diff safety check + reviewed lessons |
-| 08 | Privilege escalation via ambient authority | Policy deny + capability scoping |
+| 08 | Privilege escalation via ambient authority | Policy denial via `fence.enforce` |
 
 ## Reference
 
