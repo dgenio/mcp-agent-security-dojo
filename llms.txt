@@ -15,6 +15,7 @@ reproduces a failure and a governed path that applies controls.
 - 05_malicious_file_read: agent reads internal_secrets.txt; governed: capability token path scoping (blocked).
 - 06_raw_tool_output_context_leak: full PII records dumped into context; governed: bounded summary (redacted).
 - 07_ai_generated_auth_bypass_pr: risky auth-weakening diff would merge; governed: diff scanner blocks (blocked).
+- 08_privilege_escalation_ambient_authority: injected ticket text steers an admin role update; governed: policy deny + capability scoping (blocked).
 
 ## Commands
 

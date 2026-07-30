@@ -10,7 +10,7 @@ then govern them with policy gates, bounded context, deterministic flows, capabi
 audit traces. It is an **educational lab**, not a production security product. Tools are local
 simulators with fake data; there is no network or live LLM.
 
-## The 7 scenarios
+## The 8 scenarios
 
 1. `01_prompt_injection_in_tool_result` — injected tool output steers the agent into emailing an
    SSN; governed path: context firewall + policy deny → `blocked`.
@@ -26,6 +26,9 @@ simulators with fake data; there is no network or live LLM.
    governed: bounded summary keeps only allow-listed fields → `redacted`.
 7. `07_ai_generated_auth_bypass_pr` — a risky auth-weakening diff would merge; governed: diff
    scanner flags the pattern → `blocked`.
+8. `08_privilege_escalation_ambient_authority` — injected ticket text steers the agent into
+   calling `admin.update_user_role`; governed: policy deny + per-task capability scope →
+   `blocked`.
 
 ## Architecture (text)
 

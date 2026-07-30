@@ -25,7 +25,7 @@ capability scoping, and audit).*
 ## A 45-minute engagement flow
 
 1. **Frame the risk (5 min).** Agents act. Map the client's intended agent
-   actions to the seven scenarios below.
+   actions to the eight scenarios below.
 2. **Show one failure end to end (10 min).** Pick the scenario closest to their
    use case. Run `make run-unsafe SCENARIO=...`, then `make run-safe
    SCENARIO=...`, and contrast the outcomes.
@@ -52,6 +52,7 @@ capability scoping, and audit).*
 | 05 Malicious file read | The agent reads files outside its remit | Capability token scoping | "What is the *minimum* each task should be allowed to touch?" |
 | 06 Raw tool-output context leak | Full records (incl. PII) pile into the model context | Bounded summary / redaction | "What data minimisation applies before data hits the model?" |
 | 07 AI-generated auth-bypass PR | AI-written code quietly weakens a control and passes CI | Diff safety check + reviewed lessons | "How would you catch a security-weakening change in an AI-authored PR?" |
+| 08 Privilege escalation via ambient authority | Untrusted ticket text steers the agent toward privileged admin action | Policy deny + per-task capability scoping | "Which privileged actions must never be available as ambient authority?" |
 
 ## Mapping controls to enterprise requirements
 
