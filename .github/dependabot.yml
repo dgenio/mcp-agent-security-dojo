@@ -1,6 +1,5 @@
 # Root-only dependency automation. Intentionally vulnerable teaching scenarios
-# are deliberately excluded so their known-bad dependency state remains
-# reproducible and pedagogically useful.
+# remain excluded so their known-bad dependency state stays reproducible.
 version: 2
 updates:
   - package-ecosystem: github-actions
@@ -32,18 +31,11 @@ updates:
       day: monday
       time: "06:00"
       timezone: Etc/UTC
-    open-pull-requests-limit: 3
-    cooldown:
-      default-days: 7
+    open-pull-requests-limit: 0
     groups:
-      root-python-nonmajor:
-        applies-to: version-updates
-        patterns: ["*"]
-        update-types: [minor, patch]
-      root-python-security-nonmajor:
+      root-python-security:
         applies-to: security-updates
         patterns: ["*"]
-        update-types: [minor, patch]
     labels: [dependencies]
     commit-message:
-      prefix: "chore(deps)"
+      prefix: "fix(deps)"
