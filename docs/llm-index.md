@@ -43,9 +43,9 @@ Request → context selection / ChoiceCards (`src/dojo/context/`) → policy dec
 ## Key commands
 
 ```bash
-make setup    # editable install with dev extras
+make setup    # editable install + local PEP 735 maintainer tooling group
 make test     # run the test suite
-make lint     # ruff check
+make lint     # ruff check + format check
 make run-unsafe SCENARIO=<id>   # run the unsafe baseline for a scenario
 make run-safe   SCENARIO=<id>   # run the governed path for a scenario
 make demo                       # scenario 01, unsafe then safe
@@ -58,7 +58,7 @@ an audit trace to `traces/` (or `DOJO_TRACE_DIR`).
 
 Designed around the Weaver Stack: AgentFence (Go action — **not** the unrelated PyPI
 `agentfence`), agent-kernel (`pip install weaver-kernel`, import `weaver_kernel`), contextweaver,
-ChainWeaver (`chainweaver`), lessonweaver (install from git, not on PyPI), VibeGuard
+ChainWeaver (`chainweaver`), lessonweaver (`pip install lessonweaver`), VibeGuard
 (`vibeguard-gate`, import `vibeguard`), skdr-eval. All are currently **local reference
 implementations (stubs)** under `src/dojo/integrations/`; the real packages are not yet wired in.
 See [library map](library-map.md).

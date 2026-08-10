@@ -13,18 +13,22 @@ Every scenario exists twice. Both call the same simulated tools under `src/dojo/
 the difference is entirely in how the request is mediated.
 
 - **Unsafe baseline** — [`src/dojo/agents/unsafe_agent.py`](../src/dojo/agents/unsafe_agent.py):
-  `run_unsafe_scenario(scenario, repo_root)` dispatches per scenario and invokes
-  side-effecting tools directly, feeds raw tool output back, and keeps no audit record.
+  `run_unsafe_scenario(scenario, repo_root)` loads the scenario's `ScenarioTask`
+  configuration, seeds any raw untrusted tool output into context, then runs one
+  shared catalog → `select_tool` → execute → raw-context loop. Scenario-specific
+  data lives in `_build_tasks()`; the execution loop itself has no hard-coded
+  `if scenario == ...` outcome branches. Side-effecting tools execute directly,
+  raw results feed back into context, and there is no structured audit record.
 - **Governed path** — [`src/dojo/agents/governed_agent.py`](../src/dojo/agents/governed_agent.py):
   `run_governed_scenario(scenario, repo_root)` routes each request through policy,
   capability, context-firewall, deterministic-flow, and audit controls, then derives
   the reported status from the relevant control's outcome — via `_status_from_effect` for the
   policy-mediated scenarios (01–03), and from the capability / flow / scan / redaction result
-  for the others (04–07).
+  for the others (04–08).
 
-> The current agents use an explicit per-scenario dispatch (`if scenario == ...:`).
-> Replacing this with a single reusable execution loop is tracked separately
-> (unsafe: #29, governed: #42) and is out of scope for the documentation set.
+> The unsafe data-driven loop landed in #29. The governed agent still uses
+> explicit per-scenario dispatch; replacing that with a reusable governed loop is
+> tracked in #42. Keep that distinction explicit when extending the architecture.
 
 ## Package layout
 
@@ -91,7 +95,8 @@ agents or scenarios. Status and correct package names are in the [library map](l
 ## Adding a new control or scenario
 
 - **New scenario:** create `scenarios/NN_name/` (README, expected_failure, `unsafe_run.py`,
-  `safe_run.py`), add a branch in both agents, add it to `SCENARIOS` in
-  `tests/test_scenarios.py`, and add a row to the README scenario map.
+  `safe_run.py`), add its `ScenarioTask` configuration to `_build_tasks()` in
+  `unsafe_agent.py`, add the governed branch in `governed_agent.py`, add it to
+  `SCENARIOS` in `tests/test_scenarios.py`, and add a row to the README scenario map.
 - **New control:** add it under the relevant `src/dojo/` subpackage and wire it into
   `governed_agent.py`; document its guarantee in the [security model](security-model.md).
