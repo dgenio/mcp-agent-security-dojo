@@ -19,7 +19,7 @@ reproduces a failure and a governed path that applies controls.
 
 ## Commands
 
-- make setup — editable install with dev extras
+- make setup — editable install plus the local PEP 735 maintainer tooling group
 - make test — run the test suite
 - make run-unsafe SCENARIO=<id> — run the unsafe baseline
 - make run-safe SCENARIO=<id> — run the governed path
@@ -47,8 +47,8 @@ reproduces a failure and a governed path that applies controls.
 Designed around the Weaver Stack (AgentFence, agent-kernel/weaver-kernel, contextweaver,
 ChainWeaver, lessonweaver, VibeGuard, skdr-eval). Currently demonstrated via LOCAL REFERENCE
 IMPLEMENTATIONS (stubs) under src/dojo/integrations/; the real packages are not yet wired in.
-Note: the PyPI package "agentfence" is an unrelated third-party project — this project's
-AgentFence is a Go module / GitHub Action.
+LessonWeaver is published as `lessonweaver` on PyPI. Note: the PyPI package "agentfence" is an
+unrelated third-party project — this project's AgentFence is a Go module / GitHub Action.
 
 ## What not to claim
 
