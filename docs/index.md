@@ -19,7 +19,7 @@ flows, capability scoping, and audit traces.
 - **Evaluating the libraries?** See the [library map](library-map.md) for the
   Weaver Stack and its current (honest) integration status.
 
-## The seven scenarios
+## The eight scenarios
 
 Each scenario ships an unsafe baseline that reproduces a failure and a governed
 path that applies controls. Run any one with:
@@ -38,6 +38,7 @@ make run-safe   SCENARIO=01_prompt_injection_in_tool_result
 | 05 | Malicious file read | Capability token scoping |
 | 06 | Raw tool-output context leak | Bounded summary / redaction |
 | 07 | AI-generated auth-bypass PR | Diff safety check + reviewed lessons |
+| 08 | Privilege escalation via ambient authority | Policy denial via `fence.enforce` |
 
 ## Reference
 
