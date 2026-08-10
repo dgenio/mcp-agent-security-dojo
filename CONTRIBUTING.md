@@ -37,7 +37,7 @@ codified in [`.editorconfig`](.editorconfig).
 ```bash
 make help         # list all targets
 make doctor       # verify the local environment
-make setup        # pip install -e .[dev]
+make setup        # editable install + local PEP 735 dev dependency group
 make test         # pytest -q
 make coverage     # pytest with a term-missing coverage report
 make lint         # ruff check + ruff format --check
@@ -46,6 +46,12 @@ make security     # bandit scan of the governed controls + tooling
 make linkcheck    # verify repo-relative Markdown links resolve
 make check        # all of the above (mirrors the checks CI runs across its workflows)
 ```
+
+`make setup` upgrades pip and installs the package with the local PEP 735
+`dev` dependency group. Those test/lint/security tools are not published as a
+user-facing wheel extra. Likewise `make docs-deps` installs the local `docs`
+group. Historical empty `[dev]` / `[docs]` extras remain only as harmless
+source-install compatibility shims.
 
 Optionally install the pre-commit hooks so the fast checks (ruff lint + format
 and basic hygiene) run automatically before each commit:
@@ -84,16 +90,18 @@ tooling — the intentionally-unsafe teaching modules are excluded (see
 [`SECURITY.md`](SECURITY.md)).
 
 CI (`.github/workflows/tests.yml`) runs lint + type + tests-with-coverage across
-Python 3.10, 3.11, and 3.12; `.github/workflows/security.yml` runs the bandit
-scan; `.github/workflows/docs.yml` checks Markdown links, builds the MkDocs site,
-and publishes it to GitHub Pages on `main`; `.github/workflows/vibeguard.yml`
-runs the scenario 07 safe path.
+Python 3.10 through 3.14; `.github/workflows/python-next.yml` provides a
+non-gating Python 3.15 pre-release canary; `.github/workflows/security.yml`
+runs the bandit scan; `.github/workflows/docs.yml` checks Markdown links,
+builds the MkDocs site, and publishes it to GitHub Pages on `main`;
+`.github/workflows/vibeguard.yml` runs the scenario 07 safe path.
 
 **Pinned actions:** third-party GitHub Actions are pinned to immutable commit
 SHAs with a trailing `# vX.Y.Z` version comment; keep that convention when
-editing workflows. [Dependabot](.github/dependabot.yml) raises weekly update PRs
-for both the actions and the Python dependencies — review those like any other
-change (confirm the new SHA matches the commented version).
+editing workflows. Dependabot maintains those Action pins. For the governed
+root Python package, routine version-update PRs are disabled; Dependabot is
+reserved for security remediation. The intentionally vulnerable scenario
+manifests remain outside dependency automation.
 
 ## Definition of done
 
