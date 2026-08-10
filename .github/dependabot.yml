@@ -1,18 +1,49 @@
+# Root-only dependency automation. Intentionally vulnerable teaching scenarios
+# are deliberately excluded so their known-bad dependency state remains
+# reproducible and pedagogically useful.
 version: 2
 updates:
-  # Keep the SHA-pinned GitHub Actions current (pins are immutable, so Dependabot
-  # raises a PR with the new SHA + version comment when an action updates).
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 3
+    cooldown:
+      default-days: 7
+    groups:
+      actions-nonmajor:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
+      actions-security:
+        applies-to: security-updates
+        patterns: ["*"]
+    labels: [dependencies]
     commit-message:
-      prefix: chore
+      prefix: "chore(ci)"
 
-  # Keep the Python dependencies (declared in pyproject.toml) current.
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 3
+    cooldown:
+      default-days: 7
+    groups:
+      root-python-nonmajor:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
+      root-python-security-nonmajor:
+        applies-to: security-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
+    labels: [dependencies]
     commit-message:
-      prefix: chore
+      prefix: "chore(deps)"
