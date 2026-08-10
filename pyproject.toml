@@ -53,7 +53,13 @@ Issues = "https://github.com/dgenio/mcp-agent-security-dojo/issues"
 Documentation = "https://github.com/dgenio/mcp-agent-security-dojo/tree/main/docs"
 Changelog = "https://github.com/dgenio/mcp-agent-security-dojo/blob/main/CHANGELOG.md"
 
+# Historical source-install shims only. Maintainer/docs tooling is local-only
+# in the PEP 735 groups below; scenario manifests remain untouched.
 [project.optional-dependencies]
+dev = []
+docs = []
+
+[dependency-groups]
 dev = [
   "pytest>=8.0",
   "pytest-cov>=5.0",
