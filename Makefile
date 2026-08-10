@@ -18,8 +18,9 @@ help:  ## Show this help (the default target)
 doctor:  ## Check the local environment (Python version, install, tools)
 	@$(PYTHON) tools/doctor.py
 
-setup:  ## Editable install with dev extras (pytest, ruff, mypy, bandit, pre-commit)
-	$(PYTHON) -m pip install -e .[dev]
+setup:  ## Editable install with local dev tooling (pytest, ruff, mypy, bandit, pre-commit)
+	$(PYTHON) -m pip install --upgrade pip
+	$(PYTHON) -m pip install -e . --group dev
 
 test:  ## Run the test suite
 	$(PYTHON) -m pytest -q
@@ -60,8 +61,9 @@ demo:  ## Run scenario 01 unsafe then safe
 new-scenario:  ## Scaffold scenarios/NN_SLUG/ (usage: make new-scenario SLUG=my_slug)
 	$(PYTHON) tools/new_scenario.py $(SLUG)
 
-docs-deps:  ## Install the docs extras (MkDocs + Material)
-	$(PYTHON) -m pip install -e .[docs]
+docs-deps:  ## Install the local docs tooling group (MkDocs + Material)
+	$(PYTHON) -m pip install --upgrade pip
+	$(PYTHON) -m pip install -e . --group docs
 
 docs:  ## Build the MkDocs site to ./site
 	$(PYTHON) -m mkdocs build
