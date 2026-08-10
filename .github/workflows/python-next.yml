@@ -26,6 +26,6 @@ jobs:
       - name: Install governed root package only
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          python -m pip install -e . --group dev
       - name: Test governed code
         run: pytest -q
