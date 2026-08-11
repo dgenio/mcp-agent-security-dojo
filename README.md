@@ -7,131 +7,157 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![Status: educational lab](https://img.shields.io/badge/status-educational%20lab-orange.svg)](#not-production-ready)
-[![Conventional Commits](https://img.shields.io/badge/commits-conventional-fe5196.svg)](https://www.conventionalcommits.org/)
 
-A hands-on security dojo for MCP-style and tool-using AI agents: reproduce common failure modes, then govern them with policy gates, bounded context, deterministic flows, capability scoping, and audit traces.
+A hands-on security dojo for MCP-style and tool-using AI agents: reproduce concrete failure modes, compare reasonable mitigations, inspect the evidence, and keep the residual risk visible.
 
-> **New here? Start with the [recommended path](docs/recommended-path.md).** It walks one guided journey end to end: see an unsafe failure, understand why, then watch the governed path stop it.
+> **Portfolio role: BREAK IT.** This repo is the security-failure/mitigation lab. It is not the whole Weaver Stack, a production security gateway, or a benchmark designed to prove dgenio software with dgenio-authored tests. See the [flagship strategy](docs/flagship-strategy.md).
 
-## Why this exists
+## Start here: three flagship failures
 
-Tool-using agents fail differently from normal chatbots. They can read files, send emails, approve refunds, and leak sensitive data when tool wiring, prompt handling, or governance is missing. This repository reproduces realistic failure modes and shows governed alternatives, using **local-only simulated tools and fake data** — no network, no real credentials, no production side effects.
+The primary journey is deliberately small. Run these three scenarios before exploring the extended lab:
 
-It is built to be read as much as run: every scenario has a plain-language walkthrough, and the controls map to a documented [architecture](docs/architecture.md), [threat model](docs/threat-model.md), and [security model](docs/security-model.md).
+| Problem | Scenario | Primary control being proved |
+|---|---|---|
+| Untrusted context / tool-result injection | [01 prompt injection](scenarios/01_prompt_injection_in_tool_result/README.md) | `contextweaver` real path when integrated |
+| Unauthorized outbound action | [03 unapproved email](scenarios/03_unapproved_email_send/README.md) | `weaver-kernel` + AgentFence boundary |
+| Known high-risk business process | [04 refund without approval](scenarios/04_refund_without_human_approval/README.md) | `chainweaver` + authorization/policy around the write |
 
-## Scenario map
+Today the runnable governed implementations are local educational/reference implementations. **They do not yet prove that the named sibling packages ran.** Real-library integration for the flagship path is tracked in [#19](https://github.com/dgenio/mcp-agent-security-dojo/issues/19); the canonical tour is tracked in [#100](https://github.com/dgenio/mcp-agent-security-dojo/issues/100).
 
-Run any row with `make run-unsafe SCENARIO=<id>` then `make run-safe SCENARIO=<id>`, where `<id>` is the scenario folder name (e.g. `01_prompt_injection_in_tool_result`). The **walkthrough** link opens that scenario's self-contained README; **trace** links a sample audit trace where one is committed.
+The target evidence shape for each flagship case is:
 
-| Scenario | What breaks in the unsafe version | What protects the governed version | Concepts (reference libs[¹](#libraries)) | Run & inspect |
-|---|---|---|---|---|
-| 01 prompt injection in tool result | Injected docs output steers the agent into forwarding the customer's SSN to an address **extracted from the untrusted text** | Context firewall sanitizes/redacts; policy **denies** exfiltration | context firewall (contextweaver), policy gate (AgentFence) | [walkthrough](scenarios/01_prompt_injection_in_tool_result/README.md) · [trace](traces/sample_safe_trace_01.json) |
-| 02 tool description poisoning | A benign-looking tool card hides a dangerous action that runs | Verified ChoiceCard + policy **denies** the hidden action | ChoiceCards (contextweaver), policy gate (AgentFence) | [walkthrough](scenarios/02_tool_description_poisoning/README.md) |
-| 03 unapproved email send | Agent sends a customer email directly | Policy returns **ask** → email downgraded to a draft pending approval | policy `ask` (AgentFence), approval (agent-kernel) | [walkthrough](scenarios/03_unapproved_email_send/README.md) |
-| 04 refund without human approval | A $350 refund is issued on weak evidence | Deterministic refund flow + threshold → **approval required** | deterministic flow (ChainWeaver), approval (agent-kernel) | [walkthrough](scenarios/04_refund_without_human_approval/README.md) · [trace](traces/sample_safe_trace_04.json) |
-| 05 malicious file read | Agent reads `internal_secrets.txt` outside any boundary | Capability token scopes reads to `examples/safe/` → **blocked** | capability tokens (agent-kernel) | [walkthrough](scenarios/05_malicious_file_read/README.md) |
-| 06 raw tool output context leak | Full CRM + billing + support records (incl. PII) dumped into context | Bounded summary keeps only allowed fields → **redacted** | bounded context (contextweaver) | [walkthrough](scenarios/06_raw_tool_output_context_leak/README.md) |
-| 07 AI-generated auth bypass PR | A risky auth-weakening diff would merge | Diff scanner flags the pattern → **blocked** | diff safety check (VibeGuard), reviewed lessons (lessonweaver) | [walkthrough](scenarios/07_ai_generated_auth_bypass_pr/README.md) |
-| 08 privilege escalation via ambient authority | An injected ticket note steers the agent into calling `admin.update_user_role` during a billing task | Policy **denies** the privileged action; per-task capability scope would deny it earlier | policy gate (AgentFence), capability tokens (agent-kernel) | [walkthrough](scenarios/08_privilege_escalation_ambient_authority/README.md) |
+```text
+unsafe baseline
+  vs
+competent DIY/reference mitigation
+  vs
+real relevant OSS component
+```
+
+A requested real mode must never silently fall back to local code.
 
 ## Quickstart
 
 ```bash
-make help     # list every target
+make help
 make setup
-make doctor   # verify your environment (Python, install, tools)
+make doctor
 make test
+
 make run-unsafe SCENARIO=01_prompt_injection_in_tool_result
 make run-safe   SCENARIO=01_prompt_injection_in_tool_result
+
+make run-unsafe SCENARIO=03_unapproved_email_send
+make run-safe   SCENARIO=03_unapproved_email_send
+
+make run-unsafe SCENARIO=04_refund_without_human_approval
+make run-safe   SCENARIO=04_refund_without_human_approval
 ```
 
 Governed runs write an audit trace to `traces/` (override the location with `DOJO_TRACE_DIR`).
 
-> **Zero local setup:** open the repo in GitHub Codespaces or a local
-> [devcontainer](.devcontainer/devcontainer.json) — `make setup` runs
-> automatically on create.
+> **Zero local setup:** open the repo in GitHub Codespaces or a local [devcontainer](.devcontainer/devcontainer.json); `make setup` runs automatically on create.
+
+## What strong evidence means here
+
+A scenario should not be tuned into a perfect marketing demo. Strong evidence includes:
+
+- a reproducible unsafe failure;
+- a legitimate action that still succeeds under governance;
+- a competent DIY/reference mitigation;
+- an actual real-library path when available, with version/commit provenance;
+- adversarial variants beyond the canonical authored string;
+- benign near-matches to expose false positives;
+- explicit limitations, known bypasses, and control-failure behavior.
+
+External contributions that **break the governed path** are welcome. See the [external red-team challenge](docs/red-team-challenge.md).
+
+Before broad promotion, the flagship is gated by blind-user evidence: strangers should be able to get value from the repo without maintainer narration and should understand what the controls do *and do not* guarantee. See the [blind-user adoption gate](docs/blind-user-gate.md).
+
+## Extended scenario map
+
+The remaining scenarios are useful exercises, but they are not first-run blockers and must not force unrelated dependencies into the flagship install.
+
+Run any row with `make run-unsafe SCENARIO=<id>` and `make run-safe SCENARIO=<id>`.
+
+| Scenario | Unsafe failure | Governed/reference control | Concepts |
+|---|---|---|---|
+| 01 prompt injection in tool result | Injected docs output steers exfiltration | Context firewall sanitizes/redacts; policy denies | contextweaver, AgentFence |
+| 02 tool description poisoning | Poisoned tool card hides a dangerous action | Verified ChoiceCard + policy denial | contextweaver, AgentFence |
+| 03 unapproved email send | Agent sends directly | `ask` / approval boundary | AgentFence, agent-kernel |
+| 04 refund without human approval | Refund runs on weak evidence | Deterministic review flow + approval | ChainWeaver, agent-kernel |
+| 05 malicious file read | Agent reads outside its boundary | Scoped capability token | agent-kernel |
+| 06 raw tool output context leak | PII-heavy records enter context | Bounded/redacted summary | contextweaver |
+| 07 AI-generated auth bypass PR | Risky generated diff would merge | Diff-safety/reference learning controls | VibeGuard, lessonweaver |
+| 08 ambient-authority privilege escalation | Injected note steers a privileged write | Policy + capability boundary | AgentFence, agent-kernel |
 
 ## Architecture
 
 ```mermaid
 flowchart LR
-    A[User request] --> B[Context selection / ChoiceCards]
-    B --> C[Policy / capability check]
-    C --> D[Deterministic flow where applicable]
+    A[User request] --> B[Context selection]
+    B --> C[Authorization / policy]
+    C --> D[Deterministic flow where useful]
     D --> E[Tool execution]
-    E --> F[Context firewall]
-    F --> G[Audit trace]
-    G --> H[Reviewed lessons]
+    E --> F[Bounded/redacted context]
+    F --> G[Audit evidence]
 ```
 
-See [docs/architecture.md](docs/architecture.md) for the full pipeline mapped to concrete modules, plus a worked end-to-end request.
+See [docs/architecture.md](docs/architecture.md), [docs/threat-model.md](docs/threat-model.md), and [docs/security-model.md](docs/security-model.md) for the detailed teaching architecture and limitations.
 
-## Unsafe baseline vs governed path
+## Current real-library status
 
-| | Unsafe baseline | Governed path |
-|---|---|---|
-| Tool exposure | all tools exposed directly | bounded tool exposure |
-| Execution | direct, ambient authority | capability-scoped |
-| Decisions | none | deny / allow / ask policy |
-| Business processes | ad hoc | deterministic flows |
-| Tool output | raw into context | context firewall + redaction |
-| Auditability | none | audit trace per run |
-| Failure learning | none | reviewed lessons |
-| Generated code | merged unchecked | CI safety check |
+The repo currently contains **local reference implementations** under `src/dojo/integrations/`. The concepts are runnable; the named sibling packages are not yet wired into the flagship path.
+
+The real-integration plan is intentionally minimal:
+
+- Scenario 01 → `contextweaver`;
+- Scenario 03 → `weaver-kernel` plus real AgentFence as its Go/sidecar boundary;
+- Scenario 04 → `chainweaver`, with authorization/policy around the write.
+
+Do not `pip install agentfence` expecting `dgenio/agentfence`: that PyPI name belongs to an unrelated project. The dgenio AgentFence is handled as its real Go/sidecar or Action boundary.
+
+`lessonweaver`, VibeGuard, and `skdr-eval` are not required merely to make the flagship look like a complete stack. Secondary exercises can remain useful without making those projects first-run dependencies.
+
+See [docs/library-map.md](docs/library-map.md) and [#19](https://github.com/dgenio/mcp-agent-security-dojo/issues/19) for the integration status.
+
+## Scope discipline
+
+Until the flagship passes its blind-user/adoption gate, these are deliberately not priorities:
+
+- a hosted playground or live MCP product;
+- a leaderboard or LLM judge;
+- workshop/content-production machinery;
+- GitHub Pages as a growth project;
+- taxonomy/compliance mapping as a substitute for reproducible evidence;
+- adding more scenarios because onboarding or downstream conversion is weak;
+- installing every Weaver project in every demo.
+
+If two serious distribution experiments produce essentially no downstream behavior, freeze the lab as a stable educational asset rather than adding more features. The full GO / ITERATE / FREEZE / MERGE / ARCHIVE rules are in [docs/blind-user-gate.md](docs/blind-user-gate.md).
 
 ## Documentation
 
-- [Recommended path](docs/recommended-path.md) — guided "start here" walkthrough.
-- [Architecture](docs/architecture.md) — package layout and the governed pipeline.
-- [Threat model](docs/threat-model.md) — assets, trust boundaries, per-scenario mapping.
+- [Flagship strategy](docs/flagship-strategy.md) — scope, evidence hierarchy, and relationship to the other labs.
+- [Blind-user adoption gate](docs/blind-user-gate.md) — falsifiable launch/continue/freeze criteria.
+- [External red-team challenge](docs/red-team-challenge.md) — how to contribute bypasses, false-positive cases, and failure variants safely.
+- [Recommended path](docs/recommended-path.md) — current guided walkthrough.
+- [Architecture](docs/architecture.md) — package layout and governed pipeline.
+- [Threat model](docs/threat-model.md) — assets, trust boundaries, and scenario mapping.
 - [Security model](docs/security-model.md) — control layers, guarantees, and limitations.
-- [Library map](docs/library-map.md) — the Weaver Stack libraries and their current integration status.
-- [Glossary](docs/glossary.md) — definitions of the core terms used throughout.
-- [FAQ](docs/faq.md) — common MCP / tool-use security questions.
-- [Scenario design](docs/scenario-design.md) · [Consultant playbook](docs/consultant-playbook.md) — business-value and client-conversation framing.
-- [Distribution checklist](docs/distribution-checklist.md) — run through this before sharing the lab externally.
-- [Site plan](docs/site-plan.md) — how the docs build/publish as a MkDocs site (`make docs`).
-- [`llms.txt`](llms.txt) / [LLM index](docs/llm-index.md) — machine-readable repository summary.
-
-A browsable docs site can be built with MkDocs Material:
-
-```bash
-make docs-deps   # pip install -e .[docs]
-make docs        # build to ./site
-make docs-serve  # live preview at http://127.0.0.1:8000
-```
+- [Library map](docs/library-map.md) — package/install names and reference-vs-real status.
+- [Glossary](docs/glossary.md) and [FAQ](docs/faq.md).
 
 ## Contributing & security
 
-- [CONTRIBUTING.md](CONTRIBUTING.md) — setup, lint/test commands, and an "add a new scenario" guide.
-- [SECURITY.md](SECURITY.md) — what is (and isn't) in scope; the unsafe scenarios are intentionally vulnerable.
-- [CHANGELOG.md](CHANGELOG.md) — notable changes, Keep a Changelog format.
-- [CITATION.cff](CITATION.cff) — how to cite this project.
-
-### <a id="topics"></a>Recommended GitHub topics
-
-For discoverability, this repository should carry these topics (set under
-**Settings → General → Topics**, or via the GitHub API — they live in repository
-settings, not the codebase):
-
-`mcp` · `model-context-protocol` · `ai-agents` · `agent-security` ·
-`llm-security` · `prompt-injection` · `tool-use` · `policy-as-code` ·
-`audit-trail` · `ai-safety` · `security-lab` · `defense-in-depth`
-
-The [banner](docs/assets/banner.svg) under `docs/assets/` can be exported to PNG
-and uploaded as the repository **social preview** (Settings → General → Social
-preview).
-
-## <a id="libraries"></a>Libraries
-
-This dojo is designed around the **Weaver Stack** of agent-governance libraries (AgentFence, agent-kernel/`weaver-kernel`, contextweaver, ChainWeaver, lessonweaver, VibeGuard, skdr-eval). They are demonstrated here through **local reference implementations** under `src/dojo/integrations/` — the concepts are real and runnable, but the actual packages are **not yet wired in**. The [library map](docs/library-map.md) states, per library, what it provides, its correct install/import names, and its current status (stub vs integrated). Real integration is tracked in issue #19 and its children.
-
-¹ The "Concepts" column names the library whose pattern each control demonstrates. See the library map for the stub-vs-integrated status of each.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — setup, tests, and scenario contribution guidance.
+- [SECURITY.md](SECURITY.md) — reporting and scope; unsafe scenarios are intentionally vulnerable.
+- [CHANGELOG.md](CHANGELOG.md) — notable changes.
+- [CITATION.cff](CITATION.cff) — citation metadata.
 
 ## Who this is for
 
-AI engineers, platform teams, security reviewers, consultants, and technical leaders evaluating agent adoption.
+AI engineers, platform teams, security reviewers, and technical leaders evaluating tool-using agent controls.
 
 ## Not production-ready
 
-This repository is an **educational security lab and reference architecture**. The detectors are deliberately simple (regex/substring), the tools are simulators, and the data is fake. Do not treat it as a drop-in production security product. See the [security model](docs/security-model.md#limitations) for explicit limitations.
+This repository is an **educational security lab and reference architecture**. The detectors and fixtures are deliberately simple, tools are simulators, data is fake, and a strong result here is not a production-security guarantee or certification. See the [security model](docs/security-model.md#limitations) for explicit limitations.
