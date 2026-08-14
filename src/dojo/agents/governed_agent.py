@@ -159,9 +159,7 @@ def run_governed_scenario(
                 result = email.send_email(**action_args)
                 status = "allowed"
             else:
-                result = email.draft_email(
-                    action_args["to"], "Draft for approval", "Needs review"
-                )
+                result = email.draft_email(action_args["to"], "Draft for approval", "Needs review")
                 status = "approval_required" if approval["status"] == "pending" else "blocked"
         elif decision["effect"] == "allow":
             approval = None
@@ -169,9 +167,7 @@ def run_governed_scenario(
             status = "allowed"
         else:
             approval = None
-            result = email.draft_email(
-                action_args["to"], "Draft for approval", "Needs review"
-            )
+            result = email.draft_email(action_args["to"], "Draft for approval", "Needs review")
             status = "blocked"
 
         trace.add_action("email", result)
