@@ -82,7 +82,10 @@ class ApprovalRequest:
             "reviewer": self.reviewer,
             "reviewed_at": self.reviewed_at,
             "reason": self.reason,
-            "evidence_note": "reviewer identity/time are simulated unless supplied by an authenticated host",
+            "evidence_note": (
+                "reviewer identity/time are simulated unless supplied by an "
+                "authenticated host"
+            ),
         }
 
 
@@ -143,7 +146,9 @@ class ApprovalManager:
             request.reason = "approval request expired before verdict"
         elif envelope.digest != request.action_digest:
             request.status = "stale"
-            request.reason = "security-relevant action envelope changed after review request creation"
+            request.reason = (
+                "security-relevant action envelope changed after review request creation"
+            )
         elif (
             envelope.run_id != request.run_id
             or envelope.actor != request.actor
