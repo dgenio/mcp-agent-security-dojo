@@ -144,9 +144,13 @@ class ApprovalManager:
         elif envelope.digest != request.action_digest:
             request.status = "stale"
             request.reason = "security-relevant action envelope changed after review request creation"
-        elif envelope.run_id != request.run_id or envelope.policy_version != request.policy_version:
+        elif (
+            envelope.run_id != request.run_id
+            or envelope.actor != request.actor
+            or envelope.policy_version != request.policy_version
+        ):
             request.status = "stale"
-            request.reason = "run or policy binding changed after review request creation"
+            request.reason = "run, actor, or policy binding changed after review request creation"
         else:
             request.status = "approved"
             request.reason = "exact reviewed action envelope approved"
