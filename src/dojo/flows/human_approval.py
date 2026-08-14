@@ -83,8 +83,7 @@ class ApprovalRequest:
             "reviewed_at": self.reviewed_at,
             "reason": self.reason,
             "evidence_note": (
-                "reviewer identity/time are simulated unless supplied by an "
-                "authenticated host"
+                "reviewer identity/time are simulated unless supplied by an authenticated host"
             ),
         }
 
