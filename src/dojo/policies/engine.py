@@ -10,6 +10,7 @@ from dojo.policies.rules import PolicyDecision, PolicyRule
 class PolicyEngine:
     def __init__(self, policy_path: str) -> None:
         data = yaml.safe_load(Path(policy_path).read_text(encoding="utf-8"))
+        self.version = str(data.get("version", "unknown"))
         self.rules = [
             PolicyRule(
                 action=str(item["action"]),
