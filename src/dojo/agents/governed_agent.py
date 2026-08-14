@@ -1,11 +1,13 @@
 """Governed agent behavior with policy/context/audit controls."""
 
 import json
+import uuid
 from pathlib import Path
 
 from dojo.audit.trace import AuditTrace
 from dojo.audit.writer import write_trace
 from dojo.context.metrics import context_metrics
+from dojo.flows.human_approval import ActionEnvelope, ApprovalManager
 from dojo.flows.refund_review import run_refund_review
 from dojo.integrations.agent_kernel_adapter import CapabilityToken
 from dojo.integrations.agentfence_adapter import AgentFenceAdapter
@@ -17,7 +19,7 @@ from dojo.integrations.contextweaver_adapter import (
 from dojo.integrations.lessonweaver_adapter import get_reviewed_lessons
 from dojo.integrations.vibeguard_adapter import scan_diff
 from dojo.policies.engine import PolicyEngine
-from dojo.tools import email, filesystem
+from dojo.tools import billing, email, filesystem
 
 
 def _engine(root: Path) -> PolicyEngine:
@@ -28,6 +30,10 @@ def _strict_engine(root: Path) -> PolicyEngine:
     return PolicyEngine(str(root / "policies" / "strict_policy.yaml"))
 
 
+def _human_approval_engine(root: Path) -> PolicyEngine:
+    return PolicyEngine(str(root / "policies" / "human_approval_policy.yaml"))
+
+
 def _status_from_effect(effect: str) -> str:
     """Map a policy decision effect to a scenario status so the reported
     outcome always tracks the actual enforcement decision (never hard-coded)."""
@@ -36,7 +42,53 @@ def _status_from_effect(effect: str) -> str:
     )
 
 
-def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
+def _resolve_approval(
+    trace: AuditTrace,
+    engine: PolicyEngine,
+    *,
+    action: str,
+    target: str,
+    arguments: dict,
+    approval_verdict: str | None,
+) -> tuple[dict, bool]:
+    """Create an exact-envelope approval request and optionally resolve it.
+
+    The default path leaves the request pending. ``approved`` and ``rejected``
+    are simulated human verdicts for this educational lab; a real host would
+    authenticate the reviewer and supply its own identity/time evidence.
+    """
+
+    manager = ApprovalManager()
+    envelope = ActionEnvelope(
+        run_id=f"run-{uuid.uuid4().hex}",
+        actor="governed-agent",
+        action=action,
+        target=target,
+        arguments=arguments,
+        policy_version=engine.version,
+    )
+    request = manager.create_request(envelope)
+    trace.add_action("approval_request", request.as_dict())
+
+    if approval_verdict is None:
+        return request.as_dict(), False
+    if approval_verdict == "approved":
+        resolved = manager.approve(request.request_id, envelope)
+    elif approval_verdict == "rejected":
+        resolved = manager.reject(request.request_id)
+    else:
+        raise ValueError("approval_verdict must be None, 'approved', or 'rejected'")
+
+    trace.add_action("approval_verdict", resolved.as_dict())
+    return resolved.as_dict(), resolved.status == "approved"
+
+
+def run_governed_scenario(
+    scenario: str,
+    repo_root: str = ".",
+    *,
+    approval_verdict: str | None = None,
+) -> dict:
     root = Path(repo_root)
     trace = AuditTrace(scenario=scenario)
     fence = AgentFenceAdapter(_engine(root))
@@ -82,35 +134,105 @@ def run_governed_scenario(scenario: str, repo_root: str = ".") -> dict:
         }
 
     if scenario == "03_unapproved_email_send":
-        decision = fence.enforce("email.send", "external_customer")
+        approval_engine = _human_approval_engine(root)
+        policy_decision = approval_engine.decide("email.send", "external_customer")
+        decision = {"effect": policy_decision.effect, "reason": policy_decision.reason}
         trace.add_decision(
             "email.send", "external_customer", decision["effect"], decision["reason"]
         )
-        if decision["effect"] == "allow":
-            result = email.send_email("customer@example.com", "Your case", "Approved response")
+        action_args = {
+            "to": "customer@example.com",
+            "subject": "Your case",
+            "body": "Approved response",
+        }
+
+        if decision["effect"] == "ask":
+            approval, may_execute = _resolve_approval(
+                trace,
+                approval_engine,
+                action="email.send",
+                target="external_customer",
+                arguments=action_args,
+                approval_verdict=approval_verdict,
+            )
+            if may_execute:
+                result = email.send_email(**action_args)
+                status = "allowed"
+            else:
+                result = email.draft_email(
+                    action_args["to"], "Draft for approval", "Needs review"
+                )
+                status = "approval_required" if approval["status"] == "pending" else "blocked"
+        elif decision["effect"] == "allow":
+            approval = None
+            result = email.send_email(**action_args)
+            status = "allowed"
         else:
-            result = email.draft_email("customer@example.com", "Draft for approval", "Needs review")
+            approval = None
+            result = email.draft_email(
+                action_args["to"], "Draft for approval", "Needs review"
+            )
+            status = "blocked"
+
         trace.add_action("email", result)
         trace_path = write_trace(trace)
         return {
-            "status": _status_from_effect(decision["effect"]),
+            "status": status,
             "decision": decision,
+            "approval": approval,
             "email": result,
             "trace_path": trace_path,
         }
 
     if scenario == "04_refund_without_human_approval":
         review = run_refund_review("inv-100", "ticket-100")
-        policy_decision = _strict_engine(root).decide("refund.issue", "high_value")
+        approval_engine = _human_approval_engine(root)
+        policy_decision = approval_engine.decide("refund.issue", "high_value")
         trace.add_decision(
             "refund.issue", "high_value", policy_decision.effect, policy_decision.reason
         )
         trace.add_action("refund_review", review)
+        decision = {"effect": policy_decision.effect, "reason": policy_decision.reason}
+        refund_args = {
+            "invoice_id": review["invoice"]["invoice_id"],
+            "amount": review["invoice"]["amount"],
+            "root": root,
+        }
+
+        approval = None
+        refund = None
+        if review["requires_human_approval"] and policy_decision.effect == "ask":
+            approval, may_execute = _resolve_approval(
+                trace,
+                approval_engine,
+                action="refund.issue",
+                target="high_value",
+                arguments={
+                    "invoice_id": refund_args["invoice_id"],
+                    "amount": refund_args["amount"],
+                },
+                approval_verdict=approval_verdict,
+            )
+            if may_execute:
+                refund = billing.issue_refund(**refund_args)
+                trace.add_action("refund", refund)
+                status = "allowed"
+            else:
+                status = "approval_required" if approval["status"] == "pending" else "blocked"
+        elif policy_decision.effect == "allow":
+            refund = billing.issue_refund(**refund_args)
+            trace.add_action("refund", refund)
+            status = "allowed"
+        else:
+            status = "blocked"
+
         trace_path = write_trace(trace)
         return {
-            "status": "approval_required" if review["requires_human_approval"] else "allowed",
-            "decision": {"effect": policy_decision.effect, "reason": policy_decision.reason},
+            "status": status,
+            "decision": decision,
+            "approval": approval,
             "review": review,
+            "refund": refund,
             "trace_path": trace_path,
         }
 
