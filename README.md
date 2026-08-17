@@ -8,6 +8,7 @@
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 [![Status: educational lab](https://img.shields.io/badge/status-educational%20lab-orange.svg)](#not-production-ready)
 [![Conventional Commits](https://img.shields.io/badge/commits-conventional-fe5196.svg)](https://www.conventionalcommits.org/)
+[![Read the Weaver Stack overview on Towards AI](https://img.shields.io/badge/Read_the_overview-Towards_AI-black?logo=medium&logoColor=white)](https://pub.towardsai.net/the-weaver-stack-one-contract-layer-for-safe-llm-agents-7f733cad5eac)
 
 A hands-on security dojo for MCP-style and tool-using AI agents: reproduce common failure modes, then govern them with policy gates, bounded context, deterministic flows, capability scoping, and audit traces.
 
